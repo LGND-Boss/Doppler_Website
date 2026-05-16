@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Doppler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { overflow-x: hidden; cursor: auto; background: var(--ink); color: var(--bone); }
+  body { font-family: 'Space Grotesk', sans-serif; }
+
+  .admin {
+    min-height: 100vh;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 32px 96px;
+  }
+
+  /* Top */
+  .a-top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule-on-dark);
+    margin-bottom: 32px;
+  }
+  .a-top a { color: inherit; text-decoration: none; }
+  .a-top .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 22px;
+  }
+  .a-top .brand-mark {
+    width: 28px; height: 28px;
+    background-image: url('img/logo.png');
+    background-size: contain; background-position: center; background-repeat: no-repeat;
+    filter: brightness(1.4);
+  }
+  .a-top .role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .a-top .ctrls { display: flex; gap: 12px; align-items: center; }
+  .a-top button, .a-top a.btn-link {
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--rule-on-dark);
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .a-top button:hover, .a-top a.btn-link:hover {
+    background: var(--ember);
+    color: var(--ink);
+    border-color: var(--ember);
+  }
+
+  /* Title */
+  h1.admin-h {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(40px, 6vw, 80px);
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h1.admin-h .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic; font-weight: 400;
+    text-transform: none;
+  }
+  .admin-sub {
+    font-size: 15px; line-height: 1.55;
+    max-width: 640px;
+    opacity: 0.7;
+    margin-bottom: 40px;
+  }
+  .admin-sub code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(244,201,122,0.12);
+    color: var(--ember);
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 12px;
+  }
+
+  /* Login gate */
+  .gate {
+    max-width: 420px;
+    margin: 80px auto;
+    padding: 36px;
+    border: 1px solid var(--rule-on-dark);
+    background: rgba(255,255,255,0.02);
+  }
+  .gate h2 {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 36px;
+    margin-bottom: 24px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--rule-on-dark);
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 14px 22px;
+    background: transparent;
+    border: none;
+    color: var(--bone);
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    opacity: 0.5;
+    transition: opacity 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .tab:hover { opacity: 0.9; }
+  .tab.active {
+    opacity: 1;
+    border-bottom-color: var(--ember);
+    color: var(--ember);
+  }
+
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Common form bits */
+  .panel-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule-on-dark);
+    margin-bottom: 24px;
+  }
+  .panel-head h2 {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 32px;
+    letter-spacing: -0.01em;
+  }
+  .panel-head .actions { display: flex; gap: 8px; }
+
+  .field {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-bottom: 16px;
+  }
+  .field label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .field input, .field select, .field textarea {
+    background: rgba(255,255,255,0.04);
+    color: var(--bone);
+    border: 1px solid var(--rule-on-dark);
+    padding: 12px 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--ember);
+    background: rgba(244,201,122,0.04);
+  }
+  .field textarea { min-height: 96px; resize: vertical; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .field-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .help {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    opacity: 0.5;
+    margin-top: -10px;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  /* Buttons */
+  .btn-a {
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--rule-on-dark);
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .btn-a:hover { background: var(--ember); color: var(--ink); border-color: var(--ember); }
+  .btn-a.danger { color: #ff8c7a; border-color: rgba(255, 140, 122, 0.4); }
+  .btn-a.danger:hover { background: #ff6b50; color: var(--ink); border-color: #ff6b50; }
+  .btn-a.primary { background: var(--ember); color: var(--ink); border-color: var(--ember); }
+  .btn-a.primary:hover { background: var(--ember-deep); border-color: var(--ember-deep); }
+
+  /* List items */
+  .list { display: flex; flex-direction: column; gap: 12px; }
+  .item-card {
+    border: 1px solid var(--rule-on-dark);
+    background: rgba(255,255,255,0.02);
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: start;
+  }
+  .item-card .head {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    letter-spacing: -0.005em;
+    margin-bottom: 6px;
+  }
+  .item-card .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    opacity: 0.55;
+    text-transform: uppercase;
+  }
+  .item-card .meta-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .item-card .note {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .item-card .row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ember);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    z-index: 100;
+    opacity: 0; transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  /* Modal */
+  .modal-back {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.72);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 90;
+    padding: 24px;
+  }
+  .modal-back.open { display: flex; }
+  .modal {
+    background: #221912;
+    border: 1px solid var(--rule-on-dark);
+    padding: 28px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .modal h3 {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 28px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule-on-dark);
+  }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+  /* About + perks */
+  .perk-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .perk-row input { flex: 1; }
+
+  /* Menu editor */
+  .m-section {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(244,201,122,0.12);
+  }
+  .m-section:last-child { border-bottom: none; }
+  .m-section-head {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(244,201,122,0.18);
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .m-cats { display: flex; flex-direction: column; gap: 16px; }
+  .m-cat {
+    border: 1px solid var(--rule-on-dark);
+    background: rgba(255,255,255,0.02);
+    padding: 16px 18px;
+  }
+  .m-cat-top {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 0.6fr auto;
+    gap: 10px;
+    align-items: end;
+    margin-bottom: 10px;
+  }
+  .m-cat-top .field { margin-bottom: 0; }
+  .m-cat-top .row-actions { display: flex; gap: 4px; }
+  .m-cat-sub-row { margin-bottom: 12px; }
+  .m-cat-sub-row .field { margin-bottom: 0; }
+  .m-items {
+    display: flex; flex-direction: column; gap: 6px;
+    border-top: 1px dashed rgba(244,201,122,0.18);
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+  .m-item {
+    display: grid;
+    grid-template-columns: 1.2fr 1.6fr 0.5fr auto;
+    gap: 8px;
+    align-items: center;
+  }
+  .m-item input {
+    background: rgba(255,255,255,0.04);
+    color: var(--bone);
+    border: 1px solid var(--rule-on-dark);
+    padding: 8px 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+  }
+  .m-item input:focus {
+    outline: none; border-color: var(--ember); background: rgba(244,201,122,0.04);
+  }
+  .m-item input.mono {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  }
+  .m-item .row-actions { display: flex; gap: 2px; }
+  .m-item button {
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--rule-on-dark);
+    padding: 6px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    min-width: 28px;
+  }
+  .m-item button:hover { background: var(--ember); color: var(--ink); border-color: var(--ember); }
+  .m-item button.danger { color: #ff8c7a; border-color: rgba(255,140,122,0.4); }
+  .m-item button.danger:hover { background: #ff6b50; color: var(--ink); border-color: #ff6b50; }
+  .m-add-item-row {
+    margin-top: 10px;
+    display: flex; gap: 6px;
+  }
+  .m-empty {
+    opacity: 0.45; padding: 18px;
+    border: 1px dashed var(--rule-on-dark);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .m-addon { display: grid; grid-template-columns: 1.6fr 0.6fr auto; gap: 8px; margin-bottom: 6px; }
+  .m-addon input {
+    background: rgba(255,255,255,0.04);
+    color: var(--bone);
+    border: 1px solid var(--rule-on-dark);
+    padding: 10px 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+  }
+  .m-addon input.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .m-addon input:focus { outline: none; border-color: var(--ember); background: rgba(244,201,122,0.04); }
+
+  @media (max-width: 780px) {
+    .m-cat-top { grid-template-columns: 1fr; }
+    .m-item { grid-template-columns: 1fr; }
+    .m-addon { grid-template-columns: 1fr; }
+  }
+
+  /* Photos */
+  .img-note {
+    font-size: 13px;
+    line-height: 1.55;
+    opacity: 0.7;
+    margin-bottom: 24px;
+    max-width: 720px;
+  }
+  .img-note strong { color: var(--ember); font-weight: 500; }
+  .img-quota {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    padding: 8px 12px;
+    border: 1px solid var(--rule-on-dark);
+  }
+  .img-quota.warn { color: #ffb37a; border-color: rgba(255,179,122,0.4); opacity: 1; }
+  .img-quota.full { color: #ff8c7a; border-color: rgba(255,140,122,0.4); opacity: 1; }
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .img-slot {
+    border: 1px solid var(--rule-on-dark);
+    background: rgba(255,255,255,0.02);
+    display: flex; flex-direction: column;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .img-slot.drag-over {
+    border-color: var(--ember);
+    background: rgba(244,201,122,0.06);
+  }
+  .img-slot.busy { opacity: 0.55; pointer-events: none; }
+  .img-thumb {
+    aspect-ratio: 4 / 3;
+    background: #0e0a07 center/cover no-repeat;
+    background-image:
+      linear-gradient(135deg, rgba(244,201,122,0.04) 0%, rgba(244,201,122,0) 50%),
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0 8px, transparent 8px 16px);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .img-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .img-thumb .img-drophint {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bone);
+    background: rgba(0,0,0,0.55);
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .img-thumb:hover .img-drophint,
+  .img-slot.drag-over .img-drophint { opacity: 1; }
+  .img-thumb .img-badge {
+    position: absolute;
+    top: 10px; left: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: var(--ember);
+    color: var(--ink);
+    padding: 4px 8px;
+  }
+  .img-thumb .img-badge.default {
+    background: rgba(0,0,0,0.6);
+    color: var(--bone);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .img-body {
+    padding: 14px 16px 16px;
+    display: flex; flex-direction: column; gap: 6px;
+    flex: 1;
+  }
+  .img-body .img-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    letter-spacing: -0.005em;
+  }
+  .img-body .img-where {
+    font-size: 12px;
+    opacity: 0.65;
+    line-height: 1.4;
+  }
+  .img-body .img-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    opacity: 0.55;
+    text-transform: uppercase;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+  .img-actions {
+    display: flex; gap: 6px;
+    padding: 0 16px 16px;
+  }
+  .img-actions button {
+    flex: 1;
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--rule-on-dark);
+    padding: 8px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .img-actions button:hover { background: var(--ember); color: var(--ink); border-color: var(--ember); }
+  .img-actions button.danger { color: #ff8c7a; border-color: rgba(255,140,122,0.4); flex: 0 0 auto; padding: 8px 12px; }
+  .img-actions button.danger:hover { background: #ff6b50; color: var(--ink); border-color: #ff6b50; }
+  .img-actions button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  @media (max-width: 720px) {
+    .admin { padding: 20px; }
+    .field-row, .field-row-3 { grid-template-columns: 1fr; }
+    .item-card { grid-template-columns: 1fr; }
+    .item-card .row-actions { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<div class="admin" id="admin-root">
+
+  <!-- Login gate (initial) -->
+  <div id="gate" class="gate">
+    <div class="role" style="margin-bottom: 16px; opacity: 0.6; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;">§ Admin · sign in</div>
+    <h2>Just the staff,<br/>please.</h2>
+    <form id="gate-form">
+      <div class="field">
+        <label>Passcode</label>
+        <input type="password" id="gate-pass" placeholder="Ask the manager" autocomplete="off"/>
+      </div>
+      <button type="submit" class="btn-a primary">Unlock <span class="arrow">→</span></button>
+      <span id="gate-err" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #ff8c7a; margin-left: 12px; opacity: 0; transition: opacity 0.2s;">Wrong passcode.</span>
+    </form>
+    <p style="margin-top: 24px; font-size: 12px; opacity: 0.5; line-height: 1.5;">
+      Default passcode is <code style="font-family: 'JetBrains Mono', monospace; background: rgba(244,201,122,0.12); color: var(--ember); padding: 2px 6px;">doppler</code>. Change it in <code style="font-family: 'JetBrains Mono', monospace; background: rgba(244,201,122,0.12); color: var(--ember); padding: 2px 6px;">admin.html</code> (line 1 of the script) before going live.
+    </p>
+  </div>
+
+  <!-- Authenticated UI -->
+  <div id="app" style="display: none;">
+    <div class="a-top">
+      <a href="index.html" class="brand">
+        <span class="brand-mark"></span>
+        <span>डॉप्लर · Doppler</span>
+      </a>
+      <div class="ctrls">
+        <span class="role" style="opacity: 0.55;">§ ADMIN · v1.0</span>
+        <a href="index.html" class="btn-link">View site ↗</a>
+        <button id="logout">Lock</button>
+      </div>
+    </div>
+
+    <h1 class="admin-h">Control<br/><span class="serif">room.</span></h1>
+    <p class="admin-sub">
+      Edit events, job postings, and careers copy. Changes save locally in your browser and show up immediately on the public site.
+      For permanent edits across devices, export and ship via your hosting provider.
+    </p>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="events">§ Events</button>
+      <button class="tab" data-tab="menu">§ Menu</button>
+      <button class="tab" data-tab="photos">§ Photos</button>
+      <button class="tab" data-tab="jobs">§ Jobs</button>
+      <button class="tab" data-tab="careers">§ Careers Copy</button>
+      <button class="tab" data-tab="settings">§ Settings</button>
+    </div>
+
+    <!-- EVENTS PANEL -->
+    <div class="panel active" data-panel="events">
+      <div class="panel-head">
+        <h2>Events calendar</h2>
+        <div class="actions">
+          <button class="btn-a" id="ev-reset">Reset to defaults</button>
+          <button class="btn-a primary" id="ev-new">+ New event</button>
+        </div>
+      </div>
+      <div id="ev-list" class="list"></div>
+    </div>
+
+    <!-- MENU PANEL -->
+    <div class="panel" data-panel="menu">
+      <div class="panel-head">
+        <h2>Menu</h2>
+        <div class="actions">
+          <a href="menu.html" class="btn-a" target="_blank" rel="noopener" style="display: inline-block; text-decoration: none;">Preview ↗</a>
+          <button class="btn-a" id="menu-reset">Reset to defaults</button>
+          <button class="btn-a primary" id="menu-save">Save changes</button>
+        </div>
+      </div>
+
+      <!-- Masthead -->
+      <div class="m-section">
+        <div class="m-section-head">§ 01 · Masthead</div>
+        <div class="field">
+          <label>Edition / sub-title</label>
+          <input type="text" id="m-edition" placeholder="Edition 02 · Summer 2026"/>
+        </div>
+        <div class="field-row-3">
+          <div class="field">
+            <label>Title line 1</label>
+            <input type="text" id="m-title-top"/>
+          </div>
+          <div class="field">
+            <label>Title line 2</label>
+            <input type="text" id="m-title-mid"/>
+          </div>
+          <div class="field">
+            <label>Title line 3 (italic)</label>
+            <input type="text" id="m-title-serif"/>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Address (line break = new line)</label>
+            <textarea id="m-address" style="min-height: 64px;"></textarea>
+          </div>
+          <div class="field">
+            <label>Hours</label>
+            <input type="text" id="m-hours" placeholder="06:00 — 22:30"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="m-section">
+        <div class="m-section-head">
+          <span>§ 02 · Categories &amp; items</span>
+          <button class="btn-a" id="m-cat-add">+ Add category</button>
+        </div>
+        <div id="m-cats" class="m-cats"></div>
+      </div>
+
+      <!-- Banner -->
+      <div class="m-section">
+        <div class="m-section-head">
+          <span>§ 03 · Add-ons (milk options)</span>
+          <button class="btn-a" id="m-addon-add">+ Add</button>
+        </div>
+        <div id="m-addons"></div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">§ 04 · Kitchen blurb</div>
+        <div class="field">
+          <label>Heading</label>
+          <input type="text" id="m-kitchen-title"/>
+        </div>
+        <div class="field">
+          <label>Body</label>
+          <textarea id="m-kitchen-body"></textarea>
+        </div>
+        <div class="field">
+          <label>Price range line</label>
+          <input type="text" id="m-kitchen-range" placeholder="From ₹320 · up to ₹860"/>
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">§ 05 · Fine print</div>
+        <div class="field">
+          <label>Heading</label>
+          <input type="text" id="m-fine-title"/>
+        </div>
+        <div class="field">
+          <label>Body</label>
+          <textarea id="m-fine-body"></textarea>
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">§ 06 · Footer</div>
+        <div class="field-row-3">
+          <div class="field">
+            <label>Copyright line</label>
+            <input type="text" id="m-foot-copy"/>
+          </div>
+          <div class="field">
+            <label>Tagline (italic)</label>
+            <input type="text" id="m-foot-tag"/>
+          </div>
+          <div class="field">
+            <label>Coordinates</label>
+            <input type="text" id="m-foot-coords"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTOS PANEL -->
+    <div class="panel" data-panel="photos">
+      <div class="panel-head">
+        <h2>Photos</h2>
+        <div class="actions">
+          <span id="img-quota" class="img-quota"></span>
+          <button class="btn-a" id="img-reset-all">Reset all</button>
+        </div>
+      </div>
+      <p class="img-note">
+        Drop a photo on a slot — or click it — to swap the image. Files are downscaled to <strong>1600px</strong> on the long edge and saved as <strong>JPEG ~82%</strong>, so the page stays light. Originals never leave your browser.
+      </p>
+      <div id="img-grid" class="img-grid"></div>
+    </div>
+
+    <!-- JOBS PANEL -->
+    <div class="panel" data-panel="jobs">
+      <div class="panel-head">
+        <h2>Job openings</h2>
+        <div class="actions">
+          <button class="btn-a" id="job-reset">Reset to defaults</button>
+          <button class="btn-a primary" id="job-new">+ New role</button>
+        </div>
+      </div>
+      <div id="job-list" class="list"></div>
+    </div>
+
+    <!-- CAREERS COPY PANEL -->
+    <div class="panel" data-panel="careers">
+      <div class="panel-head">
+        <h2>Careers page copy</h2>
+        <div class="actions">
+          <button class="btn-a" id="careers-reset">Reset to defaults</button>
+          <button class="btn-a primary" id="careers-save">Save changes</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Intro paragraph</label>
+        <textarea id="careers-intro"></textarea>
+      </div>
+      <div class="field">
+        <label>Contact email</label>
+        <input type="email" id="careers-contact"/>
+      </div>
+      <div class="field">
+        <label>Perks list</label>
+        <div id="perks-rows"></div>
+        <button class="btn-a" id="perk-add" style="align-self: flex-start; margin-top: 6px;">+ Add perk</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS PANEL -->
+    <div class="panel" data-panel="settings">
+      <div class="panel-head">
+        <h2>Settings</h2>
+        <div class="actions">
+          <button class="btn-a primary" id="settings-save">Save</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Hop base URL (reservations)</label>
+        <input type="url" id="hop-url" placeholder="https://hop.doppler.coffee"/>
+        <span class="help">Used as the fallback link on the Reserve section CTA.</span>
+      </div>
+      <div class="field">
+        <label>Export all data</label>
+        <textarea id="export-blob" readonly></textarea>
+        <span class="help">Copy this JSON if you want to back up or migrate the data.</span>
+      </div>
+      <div class="field">
+        <label>Import data (paste JSON)</label>
+        <textarea id="import-blob" placeholder='{"events":{...},"jobs":[...],"about":{...},"hop":"..."}'></textarea>
+        <button class="btn-a" id="import-go" style="align-self: flex-start; margin-top: 6px;">Import</button>
+      </div>
+      <div class="field">
+        <label>Danger zone</label>
+        <button class="btn-a danger" id="reset-all" style="align-self: flex-start;">Reset everything to defaults</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast">Saved.</div>
+
+  <!-- Event modal -->
+  <div class="modal-back" id="ev-modal">
+    <div class="modal">
+      <h3 id="ev-modal-title">New event</h3>
+      <input type="hidden" id="ev-orig-key"/>
+      <div class="field-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="ev-date"/>
+        </div>
+        <div class="field">
+          <label>Time</label>
+          <input type="time" id="ev-time"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Title</label>
+        <input type="text" id="ev-title" placeholder="e.g. Cupping · Ethiopia Yirgacheffe"/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Kind</label>
+          <select id="ev-kind">
+            <option value="cupping">Cupping</option>
+            <option value="listening">Listening</option>
+            <option value="tasting">Tasting</option>
+            <option value="workshop">Workshop</option>
+            <option value="film">Cinema</option>
+            <option value="guest">Guest</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Hop link (per-event, optional)</label>
+          <input type="url" id="ev-hop" placeholder="https://hop.doppler.coffee/e/..."/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Note (one short sentence)</label>
+        <input type="text" id="ev-note" placeholder="e.g. Six lots · blind score · open seats"/>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-a" id="ev-cancel">Cancel</button>
+        <button class="btn-a primary" id="ev-save">Save event</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Job modal -->
+  <div class="modal-back" id="job-modal">
+    <div class="modal">
+      <h3 id="job-modal-title">New role</h3>
+      <input type="hidden" id="job-id"/>
+      <div class="field-row">
+        <div class="field">
+          <label>Role title</label>
+          <input type="text" id="job-title" placeholder="e.g. Head Barista"/>
+        </div>
+        <div class="field">
+          <label>Team</label>
+          <input type="text" id="job-team" placeholder="e.g. Coffee Bar"/>
+        </div>
+      </div>
+      <div class="field-row-3">
+        <div class="field">
+          <label>Type</label>
+          <select id="job-type">
+            <option>Full-time</option>
+            <option>Part-time</option>
+            <option>Contract</option>
+            <option>Apprenticeship</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <input type="text" id="job-location" placeholder="Jaipur · on-site"/>
+        </div>
+        <div class="field">
+          <label>Pay range</label>
+          <input type="text" id="job-pay" placeholder="₹38,000 – ₹52,000 / month"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Short summary</label>
+        <textarea id="job-summary" placeholder="2–3 sentences describing the work."></textarea>
+      </div>
+      <div class="field">
+        <label>Requirements (one per line)</label>
+        <textarea id="job-reqs"></textarea>
+      </div>
+      <div class="field">
+        <label>Apply link (Hop)</label>
+        <input type="url" id="job-apply" placeholder="https://hop.doppler.coffee/jobs/..."/>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-a" id="job-cancel">Cancel</button>
+        <button class="btn-a primary" id="job-save">Save role</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="doppler-data.js"></script>
+<script>
+// Change this to a strong passcode before going live.
+const ADMIN_PASS = 'doppler';
+
+// Working copy of the menu, flushed to storage on save.
+let MENU_STATE = null;
+
+const KIND_COLORS = {
+  cupping:   '#f4c97a',
+  listening: '#b39ddb',
+  tasting:   '#e57373',
+  workshop:  '#a4c66a',
+  film:      '#7fb3d5',
+  guest:     '#d99a3a',
+};
+
+// ====== GATE ======
+const SESSION_KEY = 'doppler.admin.session';
+const gate = document.getElementById('gate');
+const app  = document.getElementById('app');
+
+function openApp() {
+  gate.style.display = 'none';
+  app.style.display = 'block';
+  renderAll();
+}
+function closeApp() {
+  sessionStorage.removeItem(SESSION_KEY);
+  app.style.display = 'none';
+  gate.style.display = 'block';
+}
+if (sessionStorage.getItem(SESSION_KEY) === '1') openApp();
+
+document.getElementById('gate-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = document.getElementById('gate-pass').value;
+  if (v === ADMIN_PASS) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    openApp();
+  } else {
+    const err = document.getElementById('gate-err');
+    err.style.opacity = '1';
+    setTimeout(() => { err.style.opacity = '0'; }, 1800);
+  }
+});
+document.getElementById('logout').addEventListener('click', closeApp);
+
+// ====== TABS ======
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelector(`.panel[data-panel="${tab.dataset.tab}"]`).classList.add('active');
+    if (tab.dataset.tab === 'settings') refreshExport();
+  });
+});
+
+// ====== TOAST ======
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg || 'Saved.';
+  t.classList.add('show');
+  clearTimeout(window.__toastT);
+  window.__toastT = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+// ====== ESCAPE ======
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// ====== EVENTS ======
+function renderEvents() {
+  const list = document.getElementById('ev-list');
+  const events = window.DopplerData.getEvents();
+  const keys = Object.keys(events).sort();
+  list.innerHTML = '';
+
+  if (!keys.length) {
+    list.innerHTML = '<div class="c-empty" style="opacity: 0.5; padding: 32px; border: 1px dashed var(--rule-on-dark);">No events. Add one to get started.</div>';
+    return;
+  }
+
+  keys.forEach(k => {
+    const ev = events[k];
+    const el = document.createElement('div');
+    el.className = 'item-card';
+    const color = KIND_COLORS[ev.kind] || '#888';
+    el.innerHTML = `
+      <div>
+        <div class="meta"><span class="meta-dot" style="background:${color}"></span>${k} · ${ev.time || '—'} · ${ev.kind}</div>
+        <div class="head">${escapeHtml(ev.title)}</div>
+        ${ev.note ? `<div class="note">${escapeHtml(ev.note)}</div>` : ''}
+        ${ev.hop ? `<div class="note" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; opacity: 0.5; word-break: break-all;">${escapeHtml(ev.hop)}</div>` : ''}
+      </div>
+      <div class="row-actions">
+        <button class="btn-a" data-edit="${k}">Edit</button>
+        <button class="btn-a danger" data-del="${k}">Delete</button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+
+  list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openEvModal(b.dataset.edit)));
+  list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => {
+    if (!confirm('Delete this event?')) return;
+    const e = window.DopplerData.getEvents();
+    delete e[b.dataset.del];
+    window.DopplerData.setEvents(e);
+    renderEvents(); toast('Event deleted.');
+  }));
+}
+
+const evModal = document.getElementById('ev-modal');
+function openEvModal(key) {
+  const events = window.DopplerData.getEvents();
+  const ev = key ? events[key] : null;
+  document.getElementById('ev-modal-title').textContent = ev ? 'Edit event' : 'New event';
+  document.getElementById('ev-orig-key').value = key || '';
+  document.getElementById('ev-date').value  = key || '';
+  document.getElementById('ev-time').value  = ev ? (ev.time || '') : '';
+  document.getElementById('ev-title').value = ev ? (ev.title || '') : '';
+  document.getElementById('ev-kind').value  = ev ? (ev.kind || 'cupping') : 'cupping';
+  document.getElementById('ev-hop').value   = ev ? (ev.hop || '') : '';
+  document.getElementById('ev-note').value  = ev ? (ev.note || '') : '';
+  evModal.classList.add('open');
+}
+function closeEvModal() { evModal.classList.remove('open'); }
+document.getElementById('ev-new').addEventListener('click', () => openEvModal(null));
+document.getElementById('ev-cancel').addEventListener('click', closeEvModal);
+document.getElementById('ev-save').addEventListener('click', () => {
+  const date  = document.getElementById('ev-date').value;
+  const title = document.getElementById('ev-title').value.trim();
+  if (!date || !title) { toast('Need date + title.'); return; }
+  const origKey = document.getElementById('ev-orig-key').value;
+  const events = window.DopplerData.getEvents();
+  if (origKey && origKey !== date) delete events[origKey];
+  events[date] = {
+    title,
+    kind: document.getElementById('ev-kind').value,
+    time: document.getElementById('ev-time').value,
+    note: document.getElementById('ev-note').value.trim(),
+    hop:  document.getElementById('ev-hop').value.trim(),
+  };
+  window.DopplerData.setEvents(events);
+  closeEvModal(); renderEvents(); toast('Event saved.');
+});
+document.getElementById('ev-reset').addEventListener('click', () => {
+  if (!confirm('Reset events to defaults? Your custom events will be lost.')) return;
+  window.DopplerData.resetEvents();
+  renderEvents(); toast('Events reset.');
+});
+
+// ====== JOBS ======
+function renderJobs() {
+  const list = document.getElementById('job-list');
+  const jobs = window.DopplerData.getJobs();
+  list.innerHTML = '';
+  if (!jobs || !jobs.length) {
+    list.innerHTML = '<div class="c-empty" style="opacity: 0.5; padding: 32px; border: 1px dashed var(--rule-on-dark);">No open roles. Add one to get started.</div>';
+    return;
+  }
+  jobs.forEach((j, i) => {
+    const el = document.createElement('div');
+    el.className = 'item-card';
+    el.innerHTML = `
+      <div>
+        <div class="meta">${escapeHtml(j.team || '—')} · ${escapeHtml(j.type || '—')} · ${escapeHtml(j.location || '—')}</div>
+        <div class="head">${escapeHtml(j.title)}</div>
+        <div class="note">${escapeHtml(j.summary || '')}</div>
+        ${j.pay ? `<div class="meta" style="margin-top:8px; color: var(--ember);">${escapeHtml(j.pay)}</div>` : ''}
+      </div>
+      <div class="row-actions">
+        <button class="btn-a" data-up="${i}" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button class="btn-a" data-down="${i}" ${i === jobs.length-1 ? 'disabled' : ''}>↓</button>
+        <button class="btn-a" data-edit="${j.id}">Edit</button>
+        <button class="btn-a danger" data-del="${j.id}">Delete</button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+
+  list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openJobModal(b.dataset.edit)));
+  list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => {
+    if (!confirm('Delete this role?')) return;
+    const jobs = window.DopplerData.getJobs().filter(x => x.id !== b.dataset.del);
+    window.DopplerData.setJobs(jobs);
+    renderJobs(); toast('Role deleted.');
+  }));
+  list.querySelectorAll('[data-up]').forEach(b => b.addEventListener('click', () => {
+    const i = parseInt(b.dataset.up, 10);
+    const jobs = window.DopplerData.getJobs();
+    [jobs[i-1], jobs[i]] = [jobs[i], jobs[i-1]];
+    window.DopplerData.setJobs(jobs); renderJobs();
+  }));
+  list.querySelectorAll('[data-down]').forEach(b => b.addEventListener('click', () => {
+    const i = parseInt(b.dataset.down, 10);
+    const jobs = window.DopplerData.getJobs();
+    [jobs[i+1], jobs[i]] = [jobs[i], jobs[i+1]];
+    window.DopplerData.setJobs(jobs); renderJobs();
+  }));
+}
+
+const jobModal = document.getElementById('job-modal');
+function openJobModal(id) {
+  const jobs = window.DopplerData.getJobs();
+  const j = id ? jobs.find(x => x.id === id) : null;
+  document.getElementById('job-modal-title').textContent = j ? 'Edit role' : 'New role';
+  document.getElementById('job-id').value = id || '';
+  document.getElementById('job-title').value    = j ? (j.title || '') : '';
+  document.getElementById('job-team').value     = j ? (j.team || '') : '';
+  document.getElementById('job-type').value     = j ? (j.type || 'Full-time') : 'Full-time';
+  document.getElementById('job-location').value = j ? (j.location || '') : '';
+  document.getElementById('job-pay').value      = j ? (j.pay || '') : '';
+  document.getElementById('job-summary').value  = j ? (j.summary || '') : '';
+  document.getElementById('job-reqs').value     = j ? (j.requirements || []).join('\n') : '';
+  document.getElementById('job-apply').value    = j ? (j.apply || '') : '';
+  jobModal.classList.add('open');
+}
+function closeJobModal() { jobModal.classList.remove('open'); }
+document.getElementById('job-new').addEventListener('click', () => openJobModal(null));
+document.getElementById('job-cancel').addEventListener('click', closeJobModal);
+document.getElementById('job-save').addEventListener('click', () => {
+  const title = document.getElementById('job-title').value.trim();
+  if (!title) { toast('Need a title.'); return; }
+  const id = document.getElementById('job-id').value
+    || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + Math.random().toString(36).slice(2, 6);
+  const job = {
+    id,
+    title,
+    team: document.getElementById('job-team').value.trim(),
+    type: document.getElementById('job-type').value,
+    location: document.getElementById('job-location').value.trim(),
+    pay: document.getElementById('job-pay').value.trim(),
+    summary: document.getElementById('job-summary').value.trim(),
+    requirements: document.getElementById('job-reqs').value.split('\n').map(l => l.trim()).filter(Boolean),
+    apply: document.getElementById('job-apply').value.trim(),
+  };
+  const jobs = window.DopplerData.getJobs();
+  const idx = jobs.findIndex(x => x.id === id);
+  if (idx >= 0) jobs[idx] = job; else jobs.push(job);
+  window.DopplerData.setJobs(jobs);
+  closeJobModal(); renderJobs(); toast('Role saved.');
+});
+document.getElementById('job-reset').addEventListener('click', () => {
+  if (!confirm('Reset jobs to defaults? Your custom roles will be lost.')) return;
+  window.DopplerData.resetJobs();
+  renderJobs(); toast('Jobs reset.');
+});
+
+// ====== CAREERS COPY ======
+function renderCareers() {
+  const about = window.DopplerData.getAbout();
+  document.getElementById('careers-intro').value   = about.careersIntro || '';
+  document.getElementById('careers-contact').value = about.contact || '';
+  const perksRows = document.getElementById('perks-rows');
+  perksRows.innerHTML = '';
+  (about.perks || []).forEach((p, i) => addPerkRow(p));
+}
+function addPerkRow(value) {
+  const div = document.createElement('div');
+  div.className = 'perk-row';
+  div.innerHTML = `
+    <input type="text" value="${escapeHtml(value || '')}" placeholder="e.g. Annual origin trip"/>
+    <button class="btn-a danger" type="button">×</button>
+  `;
+  div.querySelector('button').addEventListener('click', () => div.remove());
+  document.getElementById('perks-rows').appendChild(div);
+}
+document.getElementById('perk-add').addEventListener('click', () => addPerkRow(''));
+document.getElementById('careers-save').addEventListener('click', () => {
+  const perks = [...document.querySelectorAll('#perks-rows .perk-row input')]
+    .map(i => i.value.trim()).filter(Boolean);
+  window.DopplerData.setAbout({
+    careersIntro: document.getElementById('careers-intro').value.trim(),
+    contact:      document.getElementById('careers-contact').value.trim(),
+    perks,
+  });
+  toast('Careers copy saved.');
+});
+document.getElementById('careers-reset').addEventListener('click', () => {
+  if (!confirm('Reset careers copy to defaults?')) return;
+  window.DopplerData.resetAbout(); renderCareers(); toast('Reset.');
+});
+
+// ====== SETTINGS ======
+function renderSettings() {
+  document.getElementById('hop-url').value = window.DopplerData.getHopUrl();
+  refreshExport();
+}
+function refreshExport() {
+  document.getElementById('export-blob').value = JSON.stringify({
+    events: window.DopplerData.getEvents(),
+    jobs:   window.DopplerData.getJobs(),
+    about:  window.DopplerData.getAbout(),
+    menu:   window.DopplerData.getMenu(),
+    images: window.DopplerData.getImages(),
+    hop:    window.DopplerData.getHopUrl(),
+  }, null, 2);
+}
+document.getElementById('settings-save').addEventListener('click', () => {
+  window.DopplerData.setHopUrl(document.getElementById('hop-url').value.trim());
+  toast('Settings saved.'); refreshExport();
+});
+document.getElementById('import-go').addEventListener('click', () => {
+  try {
+    const data = JSON.parse(document.getElementById('import-blob').value);
+    if (data.events) window.DopplerData.setEvents(data.events);
+    if (data.jobs)   window.DopplerData.setJobs(data.jobs);
+    if (data.about)  window.DopplerData.setAbout(data.about);
+    if (data.menu)   window.DopplerData.setMenu(data.menu);
+    if (data.images) {
+      // images is a {key: dataURL} map — write directly
+      try { localStorage.setItem('doppler.images', JSON.stringify(data.images)); } catch (e) {}
+    }
+    if (data.hop)    window.DopplerData.setHopUrl(data.hop);
+    renderAll(); toast('Imported.');
+  } catch (e) { toast('Invalid JSON.'); }
+});
+document.getElementById('reset-all').addEventListener('click', () => {
+  if (!confirm('Wipe ALL custom data and restore defaults? This cannot be undone.')) return;
+  window.DopplerData.resetEvents();
+  window.DopplerData.resetJobs();
+  window.DopplerData.resetAbout();
+  window.DopplerData.resetMenu();
+  window.DopplerData.clearAllImages();
+  localStorage.removeItem('doppler.hop');
+  renderAll(); toast('Everything reset.');
+});
+
+// ====== MENU ======
+function loadMenuState() {
+  MENU_STATE = JSON.parse(JSON.stringify(window.DopplerData.getMenu()));
+}
+function renderMenu() {
+  if (!MENU_STATE) loadMenuState();
+  const m = MENU_STATE;
+  document.getElementById('m-edition').value     = m.edition || '';
+  document.getElementById('m-title-top').value   = m.titleTop || '';
+  document.getElementById('m-title-mid').value   = m.titleMid || '';
+  document.getElementById('m-title-serif').value = m.titleSerif || '';
+  document.getElementById('m-address').value     = m.address || '';
+  document.getElementById('m-hours').value       = m.hours || '';
+  document.getElementById('m-kitchen-title').value = m.kitchenTitle || '';
+  document.getElementById('m-kitchen-body').value  = m.kitchenBody || '';
+  document.getElementById('m-kitchen-range').value = m.kitchenRange || '';
+  document.getElementById('m-fine-title').value    = m.finePrintTitle || '';
+  document.getElementById('m-fine-body').value     = m.finePrintBody || '';
+  document.getElementById('m-foot-copy').value     = m.footCopyright || '';
+  document.getElementById('m-foot-tag').value      = m.footTagline || '';
+  document.getElementById('m-foot-coords').value   = m.footCoords || '';
+  renderMenuCats();
+  renderMenuAddons();
+}
+
+function renderMenuCats() {
+  const host = document.getElementById('m-cats');
+  host.innerHTML = '';
+  const cats = MENU_STATE.categories || [];
+  if (!cats.length) {
+    host.innerHTML = '<div class="m-empty">No categories. Add one to get started.</div>';
+    return;
+  }
+  cats.forEach((cat, ci) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'm-cat';
+
+    const items = (cat.items || []).map((it, ii) => `
+      <div class="m-item" data-i="${ii}">
+        <input type="text" data-k="name"  value="${escapeHtml(it.name || '')}" placeholder="Item name"/>
+        <input type="text" data-k="note"  value="${escapeHtml(it.note || '')}" placeholder="note · descriptor"/>
+        <input type="text" class="mono" data-k="price" value="${escapeHtml(it.price || '')}" placeholder="₹240"/>
+        <div class="row-actions">
+          <button data-act="i-up"   title="Move up"   ${ii === 0 ? 'disabled' : ''}>↑</button>
+          <button data-act="i-down" title="Move down" ${ii === cat.items.length - 1 ? 'disabled' : ''}>↓</button>
+          <button class="danger" data-act="i-del" title="Delete">×</button>
+        </div>
+      </div>`).join('');
+
+    wrap.innerHTML = `
+      <div class="m-cat-top">
+        <div class="field"><label>Title</label>
+          <input type="text" data-k="title" value="${escapeHtml(cat.title || '')}"/>
+        </div>
+        <div class="field"><label>Code</label>
+          <input type="text" data-k="code" value="${escapeHtml(cat.code || '')}" placeholder="§ 01 · ..."/>
+        </div>
+        <div class="field"><label>Column</label>
+          <select data-k="column">
+            <option value="left"  ${cat.column !== 'right' ? 'selected' : ''}>Left</option>
+            <option value="right" ${cat.column === 'right' ? 'selected' : ''}>Right</option>
+          </select>
+        </div>
+        <div class="row-actions">
+          <button class="btn-a" data-act="c-up"   title="Move category up"   ${ci === 0 ? 'disabled' : ''}>↑</button>
+          <button class="btn-a" data-act="c-down" title="Move category down" ${ci === cats.length - 1 ? 'disabled' : ''}>↓</button>
+          <button class="btn-a danger" data-act="c-del">Delete</button>
+        </div>
+      </div>
+      <div class="m-cat-sub-row">
+        <div class="field"><label>Subtitle (optional one-liner)</label>
+          <input type="text" data-k="sub" value="${escapeHtml(cat.sub || '')}" placeholder="Pour-over via Hario Switch · ..."/>
+        </div>
+      </div>
+      <div class="m-items">
+        ${items || '<div class="m-empty" style="padding: 12px;">No items yet.</div>'}
+      </div>
+      <div class="m-add-item-row">
+        <button class="btn-a" data-act="i-add">+ Add item</button>
+      </div>`;
+
+    // category-level field bindings
+    wrap.querySelectorAll(':scope > .m-cat-top input, :scope > .m-cat-top select, :scope > .m-cat-sub-row input')
+      .forEach(inp => {
+        inp.addEventListener('input', () => {
+          cat[inp.dataset.k] = inp.value;
+        });
+      });
+
+    // category-level buttons
+    wrap.querySelectorAll(':scope > .m-cat-top [data-act]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const act = btn.dataset.act;
+        if (act === 'c-del') {
+          if (!confirm('Delete this category and all its items?')) return;
+          MENU_STATE.categories.splice(ci, 1);
+          renderMenuCats();
+        } else if (act === 'c-up' && ci > 0) {
+          const arr = MENU_STATE.categories;
+          [arr[ci-1], arr[ci]] = [arr[ci], arr[ci-1]];
+          renderMenuCats();
+        } else if (act === 'c-down' && ci < cats.length - 1) {
+          const arr = MENU_STATE.categories;
+          [arr[ci+1], arr[ci]] = [arr[ci], arr[ci+1]];
+          renderMenuCats();
+        }
+      });
+    });
+
+    // item-level bindings
+    wrap.querySelectorAll('.m-item').forEach((row) => {
+      const ii = parseInt(row.dataset.i, 10);
+      row.querySelectorAll('input[data-k]').forEach(inp => {
+        inp.addEventListener('input', () => {
+          cat.items[ii][inp.dataset.k] = inp.value;
+        });
+      });
+      row.querySelectorAll('[data-act]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const act = btn.dataset.act;
+          if (act === 'i-del') {
+            cat.items.splice(ii, 1);
+            renderMenuCats();
+          } else if (act === 'i-up' && ii > 0) {
+            [cat.items[ii-1], cat.items[ii]] = [cat.items[ii], cat.items[ii-1]];
+            renderMenuCats();
+          } else if (act === 'i-down' && ii < cat.items.length - 1) {
+            [cat.items[ii+1], cat.items[ii]] = [cat.items[ii], cat.items[ii+1]];
+            renderMenuCats();
+          }
+        });
+      });
+    });
+
+    // add-item
+    wrap.querySelector('[data-act="i-add"]').addEventListener('click', () => {
+      cat.items = cat.items || [];
+      cat.items.push({ name: '', note: '', price: '' });
+      renderMenuCats();
+    });
+
+    host.appendChild(wrap);
+  });
+}
+
+function renderMenuAddons() {
+  const host = document.getElementById('m-addons');
+  host.innerHTML = '';
+  const addons = MENU_STATE.addons || [];
+  addons.forEach((a, i) => {
+    const row = document.createElement('div');
+    row.className = 'm-addon';
+    row.innerHTML = `
+      <input type="text" data-k="name"  value="${escapeHtml(a.name || '')}"  placeholder="Oat milk"/>
+      <input type="text" class="mono" data-k="price" value="${escapeHtml(a.price || '')}" placeholder="₹60"/>
+      <button class="btn-a danger" type="button">×</button>`;
+    row.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', () => { addons[i][inp.dataset.k] = inp.value; });
+    });
+    row.querySelector('button').addEventListener('click', () => {
+      addons.splice(i, 1); renderMenuAddons();
+    });
+    host.appendChild(row);
+  });
+}
+
+document.getElementById('m-cat-add').addEventListener('click', () => {
+  MENU_STATE.categories = MENU_STATE.categories || [];
+  MENU_STATE.categories.push({
+    id: 'cat-' + Math.random().toString(36).slice(2, 7),
+    column: 'left',
+    title: 'New category',
+    code: '§ ' + String(MENU_STATE.categories.length + 1).padStart(2, '0'),
+    sub: '',
+    items: [],
+  });
+  renderMenuCats();
+});
+
+document.getElementById('m-addon-add').addEventListener('click', () => {
+  MENU_STATE.addons = MENU_STATE.addons || [];
+  MENU_STATE.addons.push({ name: '', price: '' });
+  renderMenuAddons();
+});
+
+document.getElementById('menu-save').addEventListener('click', () => {
+  // pull top-level fields off the form into MENU_STATE
+  MENU_STATE.edition        = document.getElementById('m-edition').value.trim();
+  MENU_STATE.titleTop       = document.getElementById('m-title-top').value;
+  MENU_STATE.titleMid       = document.getElementById('m-title-mid').value;
+  MENU_STATE.titleSerif     = document.getElementById('m-title-serif').value;
+  MENU_STATE.address        = document.getElementById('m-address').value;
+  MENU_STATE.hours          = document.getElementById('m-hours').value.trim();
+  MENU_STATE.kitchenTitle   = document.getElementById('m-kitchen-title').value.trim();
+  MENU_STATE.kitchenBody    = document.getElementById('m-kitchen-body').value.trim();
+  MENU_STATE.kitchenRange   = document.getElementById('m-kitchen-range').value.trim();
+  MENU_STATE.finePrintTitle = document.getElementById('m-fine-title').value.trim();
+  MENU_STATE.finePrintBody  = document.getElementById('m-fine-body').value.trim();
+  MENU_STATE.footCopyright  = document.getElementById('m-foot-copy').value.trim();
+  MENU_STATE.footTagline    = document.getElementById('m-foot-tag').value.trim();
+  MENU_STATE.footCoords     = document.getElementById('m-foot-coords').value.trim();
+  window.DopplerData.setMenu(MENU_STATE);
+  toast('Menu saved.');
+});
+
+document.getElementById('menu-reset').addEventListener('click', () => {
+  if (!confirm('Reset the entire menu to defaults? Your custom edits will be lost.')) return;
+  window.DopplerData.resetMenu();
+  loadMenuState(); renderMenu(); toast('Menu reset.');
+});
+
+// ====== PHOTOS ======
+const IMG_MAX_EDGE = 1600;
+const IMG_JPEG_QUALITY = 0.82;
+
+function fmtBytes(n) {
+  if (!n) return '0 KB';
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(0) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+function approxDataURLBytes(s) {
+  if (!s) return 0;
+  const idx = s.indexOf(',');
+  const b64 = idx >= 0 ? s.slice(idx + 1) : s;
+  const pad = b64.endsWith('==') ? 2 : b64.endsWith('=') ? 1 : 0;
+  return Math.floor(b64.length * 0.75) - pad;
+}
+
+function renderQuota() {
+  const stored = window.DopplerData.getImages();
+  const total = Object.values(stored).reduce((a, v) => a + approxDataURLBytes(v), 0);
+  const el = document.getElementById('img-quota');
+  if (!el) return;
+  el.textContent = 'Storage · ' + fmtBytes(total) + ' / ~5 MB';
+  el.classList.remove('warn', 'full');
+  if (total > 4.2 * 1024 * 1024) el.classList.add('full');
+  else if (total > 3 * 1024 * 1024) el.classList.add('warn');
+}
+
+function renderPhotos() {
+  const grid = document.getElementById('img-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const slots  = window.DopplerData.IMAGE_SLOTS;
+  const stored = window.DopplerData.getImages();
+
+  slots.forEach(slot => {
+    const has = !!stored[slot.key];
+    const src = stored[slot.key] || slot.path;
+    const size = has ? approxDataURLBytes(stored[slot.key]) : null;
+
+    const card = document.createElement('div');
+    card.className = 'img-slot';
+    card.dataset.key = slot.key;
+    card.innerHTML = `
+      <div class="img-thumb" role="button" tabindex="0" aria-label="Replace photo">
+        <img alt="" src="${escapeHtml(src)}"/>
+        <span class="img-badge ${has ? '' : 'default'}">${has ? '§ Custom' : '§ Default'}</span>
+        <span class="img-drophint">Drop or click to replace</span>
+      </div>
+      <div class="img-body">
+        <div class="img-title">${escapeHtml(slot.label)}</div>
+        <div class="img-where">${escapeHtml(slot.where)}</div>
+        <div class="img-meta">${has ? fmtBytes(size) + ' · stored' : 'Bundled file · ' + escapeHtml(slot.path)}</div>
+      </div>
+      <div class="img-actions">
+        <button data-act="upload">Replace…</button>
+        <button class="danger" data-act="reset" ${has ? '' : 'disabled'} title="Revert to bundled image">Reset</button>
+      </div>`;
+
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    card.appendChild(fileInput);
+
+    const onPick = () => fileInput.click();
+    card.querySelector('.img-thumb').addEventListener('click', onPick);
+    card.querySelector('.img-thumb').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPick(); }
+    });
+    card.querySelector('[data-act="upload"]').addEventListener('click', onPick);
+    card.querySelector('[data-act="reset"]').addEventListener('click', () => {
+      if (!confirm('Reset "' + slot.label + '" to the bundled image?')) return;
+      window.DopplerData.clearImage(slot.key);
+      renderPhotos(); renderQuota(); toast('Photo reset.');
+    });
+
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files && fileInput.files[0];
+      if (f) ingestFile(slot, f, card);
+      fileInput.value = '';
+    });
+
+    // drag-and-drop
+    const thumb = card.querySelector('.img-thumb');
+    ['dragenter', 'dragover'].forEach(ev => thumb.addEventListener(ev, (e) => {
+      e.preventDefault(); e.stopPropagation();
+      card.classList.add('drag-over');
+    }));
+    ['dragleave', 'dragend'].forEach(ev => thumb.addEventListener(ev, (e) => {
+      e.preventDefault(); e.stopPropagation();
+      card.classList.remove('drag-over');
+    }));
+    thumb.addEventListener('drop', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      card.classList.remove('drag-over');
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) ingestFile(slot, f, card);
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+function ingestFile(slot, file, card) {
+  if (!file.type || !file.type.startsWith('image/')) {
+    toast('Not an image file.'); return;
+  }
+  card.classList.add('busy');
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const dataURL = downscaleToDataURL(img);
+        const bytes = approxDataURLBytes(dataURL);
+        try {
+          window.DopplerData.setImage(slot.key, dataURL);
+        } catch (e) {
+          card.classList.remove('busy');
+          toast('Storage full. Reset a slot or use a smaller photo.');
+          return;
+        }
+        card.classList.remove('busy');
+        renderPhotos(); renderQuota();
+        toast('Saved · ' + fmtBytes(bytes));
+      } catch (e) {
+        card.classList.remove('busy');
+        toast('Could not process image.');
+      }
+    };
+    img.onerror = () => { card.classList.remove('busy'); toast('Could not read image.'); };
+    img.src = reader.result;
+  };
+  reader.onerror = () => { card.classList.remove('busy'); toast('Could not read file.'); };
+  reader.readAsDataURL(file);
+}
+
+function downscaleToDataURL(img) {
+  const w0 = img.naturalWidth, h0 = img.naturalHeight;
+  const longest = Math.max(w0, h0);
+  const scale = longest > IMG_MAX_EDGE ? IMG_MAX_EDGE / longest : 1;
+  const w = Math.round(w0 * scale);
+  const h = Math.round(h0 * scale);
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#1a1410';
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(img, 0, 0, w, h);
+  return canvas.toDataURL('image/jpeg', IMG_JPEG_QUALITY);
+}
+
+document.getElementById('img-reset-all').addEventListener('click', () => {
+  if (!confirm('Reset every photo to the bundled defaults?')) return;
+  window.DopplerData.clearAllImages();
+  renderPhotos(); renderQuota(); toast('All photos reset.');
+});
+
+function renderAll() {
+  renderEvents();
+  renderJobs();
+  renderCareers();
+  loadMenuState();
+  renderMenu();
+  renderPhotos();
+  renderQuota();
+  renderSettings();
+}
+</script>
+</body>
+</html>

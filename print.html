@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doppler · Coffee in Concrete · Jaipur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=1777544845622">
+<style>
+  /* ── Print rules ─────────────────────────── */
+  @page {
+    size: 1280px 1800px;
+    margin: 0;
+  }
+  @media print {
+    html, body {
+      background: #1a140e !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    /* Kill interactive chrome */
+    .topbar,
+    .custom-cursor,
+    .loader,
+    .tweaks-panel,
+    [data-tweaks-toggle],
+    .toast,
+    canvas.steam,
+    .scroll-indicator { display: none !important; }
+
+    /* Remove hover/transition flicker */
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    /* Each major section starts on its own page */
+    section,
+    [data-screen-label] {
+      break-before: page;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    section:first-of-type,
+    [data-screen-label]:first-of-type {
+      break-before: auto;
+    }
+
+    /* Make sure backgrounds (brick image, ember orange, etc) actually render */
+    .hero, .about, .brew, .tour, .reserve, .footer,
+    [class*="bg-"], [class*="-bg"] {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Don't clip overflow content off the page */
+    body, #root, section { overflow: visible !important; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="interactions.jsx"></script>
+<script type="text/babel" src="hero.jsx"></script>
+<script type="text/babel" src="about.jsx"></script>
+<script type="text/babel" src="pourover.jsx"></script>
+<script type="text/babel" src="tour.jsx"></script>
+<script type="text/babel" src="reservations.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+
+<script type="text/babel" data-presets="env,react">
+  // Auto-print after fonts + JSX are ready
+  (async () => {
+    try { await document.fonts.ready; } catch (_) {}
+    // Wait for React to mount the tree (#root has children)
+    const waitForMount = () => new Promise((resolve) => {
+      const root = document.getElementById('root');
+      const check = () => {
+        if (root && root.children.length > 0) resolve();
+        else requestAnimationFrame(check);
+      };
+      check();
+    });
+    await waitForMount();
+    // Settle delay for canvas/animations init + late layout
+    await new Promise((r) => setTimeout(r, 1500));
+    window.print();
+  })();
+</script>
+</body>
+</html>

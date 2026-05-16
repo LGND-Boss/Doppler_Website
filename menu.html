@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1410">
+<title>Menu · Sunset Shift 2.0 · Doppler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { overflow-x: hidden; cursor: auto; }
+
+  .menu-page {
+    min-height: 100vh;
+    background: var(--bone);
+    color: var(--ink);
+  }
+
+  /* Topbar — minimal version for the menu page */
+  .menu-top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 48px;
+    background: rgba(235, 227, 210, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .menu-top a { color: inherit; text-decoration: none; }
+  .menu-top .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .menu-top .brand-mark {
+    width: 32px; height: 32px;
+    background-image: url('img/logo.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .menu-top .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+  }
+  .menu-top .back:hover { opacity: 1; }
+
+  /* Masthead */
+  .menu-mast {
+    padding: 80px 48px 48px;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: end;
+  }
+  .menu-mast .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 24px;
+  }
+  .menu-mast h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(56px, 9vw, 132px);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  .menu-mast h1 .serif {
+    display: block;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: -0.02em;
+  }
+  .menu-mast .meta {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.8;
+    opacity: 0.7;
+  }
+  .menu-mast .meta .num {
+    font-size: 48px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: -0.02em;
+    opacity: 1;
+    line-height: 1;
+    margin-top: 8px;
+    display: block;
+  }
+
+  /* Two-column body */
+  .menu-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .menu-col {
+    padding: 48px;
+  }
+  .menu-col + .menu-col {
+    border-left: 1px solid var(--rule);
+  }
+
+  /* Category header */
+  .cat {
+    margin-bottom: 32px;
+  }
+  .cat + .cat { margin-top: 56px; }
+  .cat-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 20px;
+  }
+  .cat-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .cat-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .cat-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+    margin-top: -8px;
+  }
+
+  /* Item rows */
+  .item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: baseline;
+    padding: 10px 0;
+    position: relative;
+  }
+  .item + .item {
+    border-top: 1px dashed rgba(26,20,16,0.14);
+  }
+  .item-name {
+    font-size: 17px;
+    letter-spacing: -0.005em;
+    line-height: 1.35;
+  }
+  .item-note {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    opacity: 0.55;
+    margin-top: 2px;
+    text-transform: lowercase;
+  }
+  .item-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+  .item-price .cur {
+    opacity: 0.5;
+    margin-right: 2px;
+  }
+
+  .price-list {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    text-align: right;
+    line-height: 1.6;
+    color: rgba(26,20,16,0.78);
+  }
+
+  /* Add-on / footer banner */
+  .menu-banner {
+    background: var(--ink);
+    color: var(--bone);
+    padding: 40px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    border-bottom: 1px solid var(--rule-on-dark);
+  }
+  .menu-banner .label { color: rgba(235,227,210,0.55); }
+  .menu-banner h4 {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  .menu-banner p {
+    font-size: 14px;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+  .menu-banner .add-row {
+    display: flex; flex-direction: column; gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .menu-banner .add-row span {
+    display: flex; justify-content: space-between;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed rgba(244,201,122,0.2);
+  }
+
+  /* Foot */
+  .menu-foot {
+    padding: 32px 48px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .menu-foot .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 18px;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 1;
+  }
+
+  /* Mobile */
+  @media (max-width: 880px) {
+    .menu-top { padding: 14px 20px; }
+    .menu-mast { padding: 56px 20px 32px; grid-template-columns: 1fr; gap: 24px; }
+    .menu-mast .meta { text-align: left; }
+    .menu-body { grid-template-columns: 1fr; }
+    .menu-col { padding: 32px 20px; }
+    .menu-col + .menu-col { border-left: none; border-top: 1px solid var(--rule); }
+    .menu-banner { grid-template-columns: 1fr; padding: 32px 20px; }
+    .menu-foot { padding: 24px 20px 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<div class="menu-page">
+  <header class="menu-top">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"></span>
+      <span>डॉप्लर · Doppler</span>
+    </a>
+    <a href="index.html" class="back">← Back to site</a>
+  </header>
+
+  <section class="menu-mast">
+    <div>
+      <div class="eyebrow" id="m-eyebrow"></div>
+      <h1 id="m-title"></h1>
+    </div>
+    <div class="meta" id="m-meta"></div>
+  </section>
+
+  <section class="menu-body" id="m-body"></section>
+
+  <section class="menu-banner" id="m-banner"></section>
+
+  <footer class="menu-foot" id="m-foot"></footer>
+</div>
+
+<script src="doppler-data.js"></script>
+<script>
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function nl2br(s) { return esc(s).replace(/\n/g, '<br/>'); }
+
+  function renderMenu() {
+    const m = window.DopplerData.getMenu();
+
+    document.title = 'Menu · ' + (m.titleTop + ' ' + m.titleMid + ' ' + m.titleSerif).trim() + ' · Doppler';
+
+    document.getElementById('m-eyebrow').textContent = '§ Menu · ' + (m.edition || '');
+    document.getElementById('m-title').innerHTML =
+      (m.titleTop ? esc(m.titleTop) + '<br/>' : '') +
+      (m.titleMid ? esc(m.titleMid) + '<br/>' : '') +
+      (m.titleSerif ? '<span class="serif">' + esc(m.titleSerif) + '</span>' : '');
+    document.getElementById('m-meta').innerHTML =
+      nl2br(m.address || '') + (m.hours ? '<span class="num">' + esc(m.hours) + '</span>' : '');
+
+    // body cols
+    const body = document.getElementById('m-body');
+    const cats = m.categories || [];
+    const left  = cats.filter(c => c.column !== 'right');
+    const right = cats.filter(c => c.column === 'right');
+
+    function renderCol(arr) {
+      return '<div class="menu-col">' + arr.map(cat => {
+        const items = (cat.items || []).map(it => `
+          <div class="item">
+            <div>
+              <div class="item-name">${esc(it.name)}</div>
+              ${it.note ? '<span class="item-note">' + esc(it.note) + '</span>' : ''}
+            </div>
+            ${it.price ? '<div class="item-price"><span class="cur">₹</span>' + esc(it.price) + '</div>' : ''}
+          </div>`).join('');
+        return `
+          <div class="cat">
+            <div class="cat-head">
+              <div class="cat-title">${esc(cat.title)}</div>
+              ${cat.code ? '<div class="cat-code">' + esc(cat.code) + '</div>' : ''}
+            </div>
+            ${cat.sub ? '<div class="cat-sub">' + esc(cat.sub) + '</div>' : ''}
+            ${items}
+          </div>`;
+      }).join('') + '</div>';
+    }
+    body.innerHTML = renderCol(left) + renderCol(right);
+
+    // banner
+    const addonsRows = (m.addons || []).map(a =>
+      `<span>${esc(a.name)} <em style="font-style: normal; opacity: 0.7;">${esc(a.price)}</em></span>`
+    ).join('');
+    document.getElementById('m-banner').innerHTML = `
+      <div>
+        <div class="label">§ Add-ons · Milk options</div>
+        <h4>Make it your own.</h4>
+        <div class="add-row">${addonsRows}</div>
+      </div>
+      <div>
+        <div class="label">§ The kitchen</div>
+        <h4>${esc(m.kitchenTitle || '')}</h4>
+        <p>${esc(m.kitchenBody || '')}</p>
+        ${m.kitchenRange ? '<div style="margin-top: 12px; font-family: \'JetBrains Mono\', monospace; font-size: 13px; opacity: 0.85;">' + esc(m.kitchenRange) + '</div>' : ''}
+      </div>
+      <div>
+        <div class="label">§ The fine print</div>
+        <h4>${esc(m.finePrintTitle || '')}</h4>
+        <p>${esc(m.finePrintBody || '')}</p>
+      </div>`;
+
+    // foot
+    document.getElementById('m-foot').innerHTML = `
+      <span>${esc(m.footCopyright || '')}</span>
+      <span class="serif">${esc(m.footTagline || '')}</span>
+      <span>${esc(m.footCoords || '')}</span>`;
+  }
+  renderMenu();
+  // live-update when admin saves in another tab
+  window.addEventListener('storage', (e) => { if (e.key === 'doppler.menu') renderMenu(); });
+</script>
+
+</body>
+</html>
