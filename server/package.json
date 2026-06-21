@@ -1,0 +1,21 @@
+{
+  "name": "doppler-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test ../test",
+    "create-user": "node scripts/create-user.js",
+    "init-db": "node -e \"const fs=require('fs');const{pool}=require('./db');pool.query(fs.readFileSync('schema.sql','utf8')).then(()=>{console.log('schema applied');return pool.end()}).catch(e=>{console.error(e);process.exit(1)})\""
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.18.0",
+    "pg": "^8.12.0"
+  }
+}
