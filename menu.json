@@ -1,0 +1,50 @@
+{
+  "edition": "Edition 02 · Summer 2026",
+  "categories": [
+    { "id": "classics", "title": "Classics · Espresso Bar", "items": [
+      { "id": "espresso", "name": "Espresso shot", "note": "double · ristretto-leaning", "price": 180 },
+      { "id": "americano", "name": "Americano", "note": "long black · 1:4", "price": 200 },
+      { "id": "cappuccino", "name": "Cappuccino", "note": "5oz · dry foam", "price": 240 },
+      { "id": "latte", "name": "Latte", "note": "8oz · velvet", "price": 260 },
+      { "id": "flavoured-latte", "name": "Flavoured Latte", "note": "vanilla · hazelnut · caramel · rose", "price": 260 },
+      { "id": "flat-white", "name": "Flat White", "note": "hot · micro-foam", "price": 260 },
+      { "id": "cortado", "name": "Cortado", "note": "cut · 1:1", "price": 220 },
+      { "id": "macchiato", "name": "Macchiato", "note": "hot · marked", "price": 220 },
+      { "id": "mocha", "name": "Mocha", "note": "dark cocoa · single origin", "price": 280 }
+    ]},
+    { "id": "manual", "title": "Manual Bar", "items": [
+      { "id": "igc-ethiopian", "name": "IGC · Ethiopian", "note": "yirgacheffe · jasmine · stone fruit", "price": 360 },
+      { "id": "igc-pink-bourbon", "name": "IGC · Pink Bourbon", "note": "colombia · grape · honey", "price": 360 },
+      { "id": "igc-geisha", "name": "IGC · Geisha", "note": "panama · bergamot · floral · rare", "price": 640 },
+      { "id": "aeropress", "name": "AeroPress", "note": "inverted · 1m steep · clean cup", "price": 320 }
+    ]},
+    { "id": "coldbrew", "title": "Cold Brew", "items": [
+      { "id": "coldbrew-classic", "name": "Classic", "note": "house blend · neat", "price": 240 },
+      { "id": "coldbrew-orange", "name": "Orange", "note": "cold brew · citrus · tonic", "price": 280 },
+      { "id": "coldbrew-coconut", "name": "Coconut", "note": "cold brew · tender coconut · ice", "price": 280 }
+    ]},
+    { "id": "craft", "title": "Craft Bar", "items": [
+      { "id": "vietnamese-phin", "name": "Vietnamese Phin", "note": "robusta · condensed milk · slow drip", "price": 320 }
+    ]},
+    { "id": "signature", "title": "Signature", "items": [
+      { "id": "orange-honey-espresso", "name": "Orange Honey Espresso", "note": "espresso · orange · raw honey · ice", "price": 360 },
+      { "id": "cafe-bombon", "name": "Café Bombón", "note": "condensed milk · double espresso", "price": 360 },
+      { "id": "honey-trap", "name": "Honey Trap", "note": "espresso · jaggery · cream float", "price": 320 },
+      { "id": "greek-freddo", "name": "Greek Freddo", "note": "whipped espresso · ice · cold milk", "price": 320 },
+      { "id": "vietnamese-cloud", "name": "Vietnamese Cloud", "note": "phin · coconut foam · cocoa dust", "price": 360 }
+    ]},
+    { "id": "frappes", "title": "Frappés", "items": [
+      { "id": "og-frappe", "name": "OG Frappé", "note": "espresso · ice · milk · sugar", "price": 240 },
+      { "id": "caramel-frappe", "name": "Caramel Frappé", "note": "house caramel · espresso · cream", "price": 240 }
+    ]},
+    { "id": "coolers", "title": "Coolers", "items": [
+      { "id": "espresso-tonic", "name": "Espresso Tonic", "note": "hazelnut · caramel · indian tonic", "price": 280 },
+      { "id": "watermelon-mojito", "name": "Watermelon Mojito", "note": "watermelon · mint · lime · soda", "price": 240 },
+      { "id": "cold-pressed-juice", "name": "Cold-pressed Juices", "note": "watermelon · orange-pineapple", "price": 240 }
+    ]},
+    { "id": "smoothies", "title": "Smoothies", "items": [
+      { "id": "avocado-smoothie", "name": "Avocado", "note": "avocado · honey · cold milk · ice", "price": 420 },
+      { "id": "mixed-berries-smoothie", "name": "Mixed Berries", "note": "strawberry · blueberry · raspberry", "price": 420 }
+    ]}
+  ]
+}
