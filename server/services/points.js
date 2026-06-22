@@ -1,12 +1,22 @@
 // Pure pricing & points math. No DB, no I/O.
 
-function cartSubtotal(items, priceMap) {
+// ctx: { priceMap, addonMap, itemAddons }. Each item: { id, qty, addons?: [addonId] }.
+// Add-ons are validated against the item's allowed set and priced server-side, per unit.
+function cartSubtotal(items, ctx) {
+  const { priceMap, addonMap = {}, itemAddons = {} } = ctx || {};
   if (!Array.isArray(items) || items.length === 0) throw new Error('empty cart');
   let total = 0;
-  for (const { id, qty } of items) {
+  for (const { id, qty, addons } of items) {
     if (!Number.isInteger(qty) || qty < 1 || qty > 50) throw new Error('bad qty');
-    if (!(id in priceMap)) throw new Error('unknown item: ' + id);
-    total += priceMap[id] * qty;
+    if (!priceMap || !(id in priceMap)) throw new Error('unknown item: ' + id);
+    let unit = priceMap[id];
+    const allowed = itemAddons[id] || [];
+    for (const aid of (addons || [])) {
+      if (!(aid in addonMap)) throw new Error('unknown add-on: ' + aid);
+      if (!allowed.includes(aid)) throw new Error('add-on not allowed for ' + id + ': ' + aid);
+      unit += addonMap[aid].price;
+    }
+    total += unit * qty;
   }
   return total;
 }

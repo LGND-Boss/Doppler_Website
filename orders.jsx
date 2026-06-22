@@ -33,7 +33,10 @@ function Login({ onIn }) {
 function Lines({ items }) {
   return items.map((l, i) => (
     <div className="line" key={i}>
-      <span><span className="q">{l.qty}×</span>{l.name}{l.note ? <span style={{ color: '#9ca3af' }}> · {l.note}</span> : null}</span>
+      <span>
+        <span className="q">{l.qty}×</span>{l.name}
+        {l.addons && l.addons.length > 0 ? <span className="line-addons"> + {l.addons.map((a) => a.name).join(', ')}</span> : null}
+      </span>
     </div>
   ));
 }

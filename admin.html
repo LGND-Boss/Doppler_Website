@@ -1447,7 +1447,7 @@ function renderAll() {
     board.innerHTML = '';
     if (!orders.length) { board.innerHTML = '<p class="help">No active orders.</p>'; return; }
     orders.forEach((o) => {
-      const fmt = (arr) => arr.map(i => escapeHtml(i.qty + '× ' + i.name)).join(', ');
+      const fmt = (arr) => arr.map(i => escapeHtml(i.qty + '× ' + i.name) + (i.addons && i.addons.length ? ' <em style="opacity:.7;">(+ ' + i.addons.map(a => escapeHtml(a.name)).join(', ') + ')</em>' : '')).join(', ');
       const bar = (o.items || []).filter(i => i.station === 'bar');
       const kit = (o.items || []).filter(i => i.station === 'kitchen');
       const total = o.subtotal + (o.tax_amount || 0);

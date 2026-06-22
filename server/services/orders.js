@@ -1,6 +1,6 @@
 const db = require('../db');
 const { publish } = require('../events');
-const { priceMap, nameMap, stationMap } = require('../menu-prices');
+const { priceMap, nameMap, stationMap, addonMap, itemAddons } = require('../menu-prices');
 const { cartSubtotal, pointsForSpend, validateRedeem, redeemValue, taxFor } = require('./points');
 
 async function getSettings() {
@@ -17,11 +17,18 @@ async function recentHistory(client, customerId, limit = 5) {
   return rows;
 }
 
-// Normalize client items into [{id, name, qty, price, station}] using server data.
+// Normalize client items into line items using server data (prices, names, add-ons).
 function buildLineItems(items) {
-  return items.map(({ id, qty, note }) => ({
-    id, qty, note: note || '', name: nameMap[id], price: priceMap[id], station: stationMap[id],
-  }));
+  return items.map(({ id, qty, note, addons }) => {
+    const chosen = (addons || [])
+      .filter((aid) => addonMap[aid] && (itemAddons[id] || []).includes(aid))
+      .map((aid) => ({ id: aid, name: addonMap[aid].name, price: addonMap[aid].price }));
+    const addonTotal = chosen.reduce((s, a) => s + a.price, 0);
+    return {
+      id, qty, note: note || '', name: nameMap[id], price: priceMap[id], station: stationMap[id],
+      addons: chosen, lineTotal: (priceMap[id] + addonTotal) * qty,
+    };
+  });
 }
 
 // Derive the overall status from per-station readiness. 'paid'/'cancelled' are terminal
@@ -36,7 +43,7 @@ function deriveStatus(order) {
 
 async function placeOrder({ seatId, email, name, items }) {
   const settings = await getSettings();
-  const subtotal = cartSubtotal(items, priceMap); // throws on bad input
+  const subtotal = cartSubtotal(items, { priceMap, addonMap, itemAddons }); // throws on bad input
   const lineItems = buildLineItems(items);
   const taxPercent = Number(settings.tax_percent);
   const tax = taxFor(subtotal, taxPercent);

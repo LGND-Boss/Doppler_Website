@@ -35,3 +35,11 @@
 .t-row { display: flex; justify-content: space-between; padding: 6px 0; }
 .t-row.grand { border-top: 1px solid rgba(0,0,0,.2); margin-top: 6px; padding-top: 12px; font-weight: 700; font-size: 18px; }
 .pay-note { font-size: 12px; opacity: .6; margin-top: 10px; }
+.addon-block { padding: 0 0 8px; }
+.addon-toggle { background: transparent; border: 0; font: inherit; font-size: 12px; opacity: .7; cursor: pointer; padding: 2px 0; letter-spacing: .02em; }
+.addon-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0 4px; }
+.addon-chip { font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(0,0,0,.22); background: transparent; cursor: pointer; }
+.addon-chip.on { background: #1a1410; color: #f4efe6; border-color: #1a1410; }
+.addon-chip .ac-price { opacity: .65; font-size: 12px; }
+.addon-chip.on .ac-price { opacity: .85; }
+.review-addon { font-size: 12px; opacity: .65; margin-top: 2px; }
