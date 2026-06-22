@@ -1,56 +1,256 @@
 {
-  "edition": "Edition 02 · Summer 2026",
+  "edition": "Full Menu · 2026",
   "categories": [
-    { "id": "classics", "title": "Classics · Espresso Bar", "items": [
-      { "id": "espresso", "name": "Espresso shot", "note": "double · ristretto-leaning", "price": 180 },
-      { "id": "americano", "name": "Americano", "note": "long black · 1:4", "price": 200 },
-      { "id": "cappuccino", "name": "Cappuccino", "note": "5oz · dry foam", "price": 240 },
-      { "id": "latte", "name": "Latte", "note": "8oz · velvet", "price": 260 },
-      { "id": "flavoured-latte", "name": "Flavoured Latte", "note": "vanilla · hazelnut · caramel · rose", "price": 260 },
-      { "id": "flat-white", "name": "Flat White", "note": "hot · micro-foam", "price": 260 },
-      { "id": "cortado", "name": "Cortado", "note": "cut · 1:1", "price": 220 },
-      { "id": "macchiato", "name": "Macchiato", "note": "hot · marked", "price": 220 },
-      { "id": "mocha", "name": "Mocha", "note": "dark cocoa · single origin", "price": 280 }
+    { "id": "espresso-bar", "title": "Espresso Bar", "station": "bar", "items": [
+      { "id": "espresso", "name": "Espresso", "note": "double · hot/iced", "price": 180 },
+      { "id": "americano", "name": "Americano", "note": "long black · hot/iced", "price": 200 },
+      { "id": "macchiato", "name": "Macchiato", "note": "marked with foam · hot/iced", "price": 220 },
+      { "id": "cortado", "name": "Cortado", "note": "1:1 · hot/iced", "price": 220 },
+      { "id": "cappuccino", "name": "Cappuccino", "note": "hot/iced", "price": 240 },
+      { "id": "latte", "name": "Latte", "note": "silky steamed milk · hot/iced", "price": 240 },
+      { "id": "flat-white", "name": "Flat White", "note": "velvety · tighter foam · hot/iced", "price": 240 },
+      { "id": "flavoured-latte", "name": "Flavoured Latte", "note": "caramel · hazelnut · vanilla · rose", "price": 280 },
+      { "id": "mocha", "name": "Mocha", "note": "cocoa · coffee-forward · hot/iced", "price": 280 }
     ]},
-    { "id": "manual", "title": "Manual Bar", "items": [
-      { "id": "igc-ethiopian", "name": "IGC · Ethiopian", "note": "yirgacheffe · jasmine · stone fruit", "price": 360 },
-      { "id": "igc-pink-bourbon", "name": "IGC · Pink Bourbon", "note": "colombia · grape · honey", "price": 360 },
-      { "id": "igc-geisha", "name": "IGC · Geisha", "note": "panama · bergamot · floral · rare", "price": 640 },
-      { "id": "aeropress", "name": "AeroPress", "note": "inverted · 1m steep · clean cup", "price": 320 }
+    { "id": "cold-brew", "title": "Cold Brew", "station": "bar", "items": [
+      { "id": "coldbrew-classic", "name": "Classic Cold Brew", "note": "smooth · low-acid", "price": 240 },
+      { "id": "coldbrew-orange", "name": "Orange Cold Brew", "note": "fresh orange · citrus finish", "price": 280 },
+      { "id": "coldbrew-coconut", "name": "Coconut Cold Brew", "note": "coconut notes", "price": 280 },
+      { "id": "coldbrew-rosemary", "name": "Rosemary Cold Brew", "note": "herbal · aromatic", "price": 280 },
+      { "id": "coldbrew-whisky-barrel", "name": "Whisky Barrel Cold Brew", "note": "barrel aromatics · no alcohol", "price": 280 },
+      { "id": "coldbrew-vietnamese", "name": "Vietnamese Styled Cold Brew", "note": "condensed milk", "price": 280 },
+      { "id": "coldbrew-cranberry", "name": "Cranberry Cold Brew", "note": "bright cranberry", "price": 280 }
     ]},
-    { "id": "coldbrew", "title": "Cold Brew", "items": [
-      { "id": "coldbrew-classic", "name": "Classic", "note": "house blend · neat", "price": 240 },
-      { "id": "coldbrew-orange", "name": "Orange", "note": "cold brew · citrus · tonic", "price": 280 },
-      { "id": "coldbrew-coconut", "name": "Coconut", "note": "cold brew · tender coconut · ice", "price": 280 }
+    { "id": "signatures", "title": "Doppler Signatures", "station": "bar", "items": [
+      { "id": "honey-trap", "name": "Honey Trap", "note": "espresso · honey · milk", "price": 320 },
+      { "id": "salted-caramel-coconut", "name": "Salted Caramel Coconut", "note": "salted caramel · coconut milk · vanilla", "price": 360 },
+      { "id": "cafe-bombon", "name": "Cafe Bombon", "note": "espresso · condensed milk", "price": 360 },
+      { "id": "orange-honey-espresso", "name": "Orange Honey Espresso", "note": "orange juice · honey", "price": 360 },
+      { "id": "thai-coconut", "name": "Thai Coconut", "note": "coconut cream · condensed milk", "price": 320 },
+      { "id": "greek-freddo", "name": "Greek Freddo", "note": "iced espresso · cream", "price": 320 },
+      { "id": "vietnamese-phin", "name": "Vietnamese Phin", "note": "phin drip · condensed milk · ice", "price": 320 },
+      { "id": "vietnamese-cloud", "name": "Vietnamese Cloud", "note": "phin · creamy cloud", "price": 360 }
     ]},
-    { "id": "craft", "title": "Craft Bar", "items": [
-      { "id": "vietnamese-phin", "name": "Vietnamese Phin", "note": "robusta · condensed milk · slow drip", "price": 320 }
+    { "id": "espresso-tonics", "title": "Espresso Tonics", "station": "bar", "items": [
+      { "id": "espresso-tonic", "name": "Espresso Tonic", "note": "espresso · tonic · sparkling", "price": 240 },
+      { "id": "orange-mint-tonic", "name": "Orange Mint Espresso Tonic", "note": "citrus · mint", "price": 280 },
+      { "id": "chilli-guava-tonic", "name": "Chilli Guava Espresso Tonic", "note": "guava · chilli · fizzy", "price": 280 },
+      { "id": "hazelnut-tonic", "name": "Hazelnut Espresso Tonic", "note": "nutty · sparkling", "price": 280 },
+      { "id": "caramel-tonic", "name": "Caramel Espresso Tonic", "note": "caramel · tonic", "price": 280 }
     ]},
-    { "id": "signature", "title": "Signature", "items": [
-      { "id": "orange-honey-espresso", "name": "Orange Honey Espresso", "note": "espresso · orange · raw honey · ice", "price": 360 },
-      { "id": "cafe-bombon", "name": "Café Bombón", "note": "condensed milk · double espresso", "price": 360 },
-      { "id": "honey-trap", "name": "Honey Trap", "note": "espresso · jaggery · cream float", "price": 320 },
-      { "id": "greek-freddo", "name": "Greek Freddo", "note": "whipped espresso · ice · cold milk", "price": 320 },
-      { "id": "vietnamese-cloud", "name": "Vietnamese Cloud", "note": "phin · coconut foam · cocoa dust", "price": 360 }
+    { "id": "frappes", "title": "Frappes", "station": "bar", "items": [
+      { "id": "og-frappe", "name": "OG Frappe", "note": "classic cold coffee", "price": 320 },
+      { "id": "caramel-frappe", "name": "Caramel Frappe", "note": "buttery caramel", "price": 360 },
+      { "id": "hazelnut-frappe", "name": "Hazelnut Frappe", "note": "nutty · creamy", "price": 360 },
+      { "id": "rose-frappe", "name": "Rose Frappe", "note": "floral · chilled", "price": 360 },
+      { "id": "chocolate-frappe", "name": "Chocolate Frappe", "note": "chocolate · coffee", "price": 360 }
     ]},
-    { "id": "frappes", "title": "Frappés", "items": [
-      { "id": "og-frappe", "name": "OG Frappé", "note": "espresso · ice · milk · sugar", "price": 240 },
-      { "id": "caramel-frappe", "name": "Caramel Frappé", "note": "house caramel · espresso · cream", "price": 240 }
+    { "id": "smoothies", "title": "Smoothies", "station": "bar", "items": [
+      { "id": "avocado-smoothie", "name": "Avocado Smoothie", "note": "creamy · buttery", "price": 420 },
+      { "id": "mixed-berries-smoothie", "name": "Mixed Berries Smoothie", "note": "tart-sweet · refreshing", "price": 420 }
     ]},
-    { "id": "coolers", "title": "Coolers", "items": [
-      { "id": "espresso-tonic", "name": "Espresso Tonic", "note": "hazelnut · caramel · indian tonic", "price": 280 },
-      { "id": "watermelon-mojito", "name": "Watermelon Mojito", "note": "watermelon · mint · lime · soda", "price": 240 },
-      { "id": "cold-pressed-juice", "name": "Cold-pressed Juices", "note": "watermelon · orange-pineapple", "price": 240 }
+    { "id": "coolers", "title": "Coolers", "station": "bar", "items": [
+      { "id": "orange-juice", "name": "Orange Juice", "note": "fresh · citrus", "price": 280 },
+      { "id": "watermelon-juice", "name": "Watermelon Juice", "note": "fresh pressed", "price": 240 },
+      { "id": "pineapple-juice", "name": "Pineapple Juice", "note": "tropical", "price": 240 },
+      { "id": "fresh-lime-soda", "name": "Fresh Lime Soda", "note": "sparkling citrus", "price": 240 },
+      { "id": "mint-lime-mojito", "name": "Mint Lime Mojito", "note": "lime · mint", "price": 280 },
+      { "id": "orange-mojito", "name": "Orange Mojito", "note": "citrus · mint", "price": 280 },
+      { "id": "watermelon-mojito", "name": "Watermelon Mojito", "note": "watermelon · mint", "price": 280 },
+      { "id": "lemon-iced-tea", "name": "Lemon Iced Tea", "note": "citrus brightness", "price": 240 },
+      { "id": "peach-iced-tea", "name": "Peach Iced Tea", "note": "peach sweetness", "price": 240 },
+      { "id": "redbull-iced-tea", "name": "Red Bull Iced Tea", "note": "energetic finish", "price": 360 }
     ]},
-    { "id": "smoothies", "title": "Smoothies", "items": [
-      { "id": "avocado-smoothie", "name": "Avocado", "note": "avocado · honey · cold milk · ice", "price": 420 },
-      { "id": "mixed-berries-smoothie", "name": "Mixed Berries", "note": "strawberry · blueberry · raspberry", "price": 420 }
+    { "id": "milkshakes", "title": "Milkshakes", "station": "bar", "items": [
+      { "id": "belgian-chocolate-shake", "name": "Belgian Chocolate Milkshake", "note": "rich chocolate", "price": 320 },
+      { "id": "oreo-shake", "name": "Oreo & Cookies Cream Milkshake", "note": "crushed oreo · thick", "price": 320 },
+      { "id": "rose-shake", "name": "Rose Milkshake", "note": "floral · creamy", "price": 320 },
+      { "id": "hot-chocolate", "name": "Chocolate", "note": "hot/iced · classic", "price": 320 }
     ]},
-    { "id": "kitchen", "title": "Kitchen · Brick Oven", "station": "kitchen", "items": [
-      { "id": "avocado-toast", "name": "Avocado Sourdough Toast", "note": "sprouted seeds · sauerkraut", "price": 420 },
-      { "id": "apple-arugula-toast", "name": "Green Apple & Arugula Toast", "note": "sourdough · pistachio", "price": 380 },
-      { "id": "focaccia-plate", "name": "Focaccia Plate", "note": "olive oil · sea salt · all-day", "price": 320 },
-      { "id": "seasonal-cake", "name": "Slice of the Day", "note": "rotating cake · ask the counter", "price": 280 }
+    { "id": "tea-edit", "title": "The Tea Edit", "station": "bar", "items": [
+      { "id": "spirulina-cloud", "name": "Spirulina Cloud", "note": "blue spirulina · whipped cream · coconut water · iced", "price": 450 },
+      { "id": "nettle-orange", "name": "Nettle Orange Tea", "note": "nettle · orange · honey · iced", "price": 400 },
+      { "id": "oolong-lychee", "name": "Oolong Lychee Tea", "note": "oolong · lychee · cream · iced", "price": 460 },
+      { "id": "orange-coconut-creamsicle", "name": "Orange Coconut Creamsicle", "note": "orange · coconut whipping cream", "price": 420 },
+      { "id": "tea-assam-black", "name": "Assam Black", "note": "hot tea", "price": 180 },
+      { "id": "tea-english-breakfast", "name": "English Breakfast", "note": "hot tea", "price": 190 },
+      { "id": "tea-green", "name": "Green Tea", "note": "hot tea", "price": 180 },
+      { "id": "tea-earl-grey", "name": "Earl Grey", "note": "hot tea", "price": 200 },
+      { "id": "tea-nettle", "name": "Nettle", "note": "hot tea", "price": 200 },
+      { "id": "tea-oolong", "name": "Oolong", "note": "hot tea", "price": 210 },
+      { "id": "tea-jasmine-hibiscus", "name": "Jasmine Hibiscus", "note": "hot tea", "price": 200 }
+    ]},
+    { "id": "matcha-bar", "title": "Matcha Bar", "station": "bar", "items": [
+      { "id": "matcha-classic-latte", "name": "Matcha Classic Latte", "note": "oat milk · agave · iced", "price": 399 },
+      { "id": "matcha-salted-caramel", "name": "Matcha Salted Caramel Dream", "note": "sea salt · house caramel · oat", "price": 465 },
+      { "id": "matcha-vanilla-bean", "name": "Matcha Vanilla Bean", "note": "natural vanilla · oat", "price": 440 },
+      { "id": "matcha-coconut-theory", "name": "Matcha Coconut Theory", "note": "coconut · agave · oat", "price": 440 },
+      { "id": "matcha-sun-moon", "name": "Matcha Sun and Moon", "note": "kashmiri saffron · agave · oat", "price": 490 },
+      { "id": "matcha-crisp-apple", "name": "Matcha Crisp Apple", "note": "green apple reduction · oat", "price": 440 },
+      { "id": "matcha-london-fog", "name": "Matcha London Fog Flip", "note": "earl grey · agave · oat", "price": 490 },
+      { "id": "matcha-strawberry-fields", "name": "Matcha Strawberry Fields", "note": "strawberry compote · oat", "price": 430 },
+      { "id": "matcha-banana-wave", "name": "Matcha Banana Wave", "note": "creamy banana milk · ice", "price": 440 },
+      { "id": "matcha-mango-dream", "name": "Matcha Mango Dream", "note": "alphonso mango · oat", "price": 430 },
+      { "id": "matcha-lychee-luxe", "name": "Matcha Lychee Luxe", "note": "lychee syrup · oat", "price": 420 },
+      { "id": "matcha-white-peach", "name": "Matcha White Peach", "note": "white peach nectar · oat", "price": 420 },
+      { "id": "matcha-wild-blueberry", "name": "Matcha Wild Blueberry", "note": "blueberry sauce · oat", "price": 430 },
+      { "id": "matcha-raspberry-tart", "name": "Matcha Raspberry Tart", "note": "raspberry sauce · oat", "price": 430 },
+      { "id": "matcha-berry-medley", "name": "Matcha Berry Medley", "note": "mixed berry reduction · oat", "price": 440 }
+    ]},
+    { "id": "hojicha-bar", "title": "Hojicha Bar", "station": "bar", "items": [
+      { "id": "hojicha-classic-latte", "name": "Hojicha Classic Latte", "note": "oat milk · agave · iced", "price": 350 },
+      { "id": "hojicha-salted-caramel", "name": "Hojicha Salted Caramel Dream", "note": "sea salt · house caramel · oat", "price": 445 },
+      { "id": "hojicha-vanilla-bean", "name": "Hojicha Vanilla Bean", "note": "natural vanilla · oat", "price": 420 },
+      { "id": "hojicha-coconut-theory", "name": "Hojicha Coconut Theory", "note": "coconut · agave · oat", "price": 420 },
+      { "id": "hojicha-sun-moon", "name": "Hojicha Sun and Moon", "note": "kashmiri saffron · agave · oat", "price": 470 },
+      { "id": "hojicha-crisp-apple", "name": "Hojicha Crisp Apple", "note": "green apple reduction · oat", "price": 420 },
+      { "id": "hojicha-strawberry-fields", "name": "Hojicha Strawberry Fields", "note": "strawberry compote · oat", "price": 410 },
+      { "id": "hojicha-banana-wave", "name": "Hojicha Banana Wave", "note": "creamy banana milk · ice", "price": 420 },
+      { "id": "hojicha-mango-dream", "name": "Hojicha Mango Dream", "note": "alphonso mango · oat", "price": 410 },
+      { "id": "hojicha-lychee-luxe", "name": "Hojicha Lychee Luxe", "note": "lychee syrup · oat", "price": 400 },
+      { "id": "hojicha-white-peach", "name": "Hojicha White Peach", "note": "white peach nectar · oat", "price": 400 },
+      { "id": "hojicha-wild-blueberry", "name": "Hojicha Wild Blueberry", "note": "blueberry sauce · oat", "price": 410 },
+      { "id": "hojicha-raspberry-tart", "name": "Hojicha Raspberry Tart", "note": "raspberry sauce · oat", "price": 410 },
+      { "id": "hojicha-berry-medley", "name": "Hojicha Berry Medley", "note": "mixed berry reduction · oat", "price": 420 }
+    ]},
+    { "id": "cold-shelf", "title": "The Cold Shelf", "station": "bar", "items": [
+      { "id": "kombucha", "name": "Kombucha", "note": "all flavours", "price": 220 },
+      { "id": "evian-sparkling", "name": "Evian Sparkling Water", "note": "330ml", "price": 210 },
+      { "id": "evian-still", "name": "Evian Still Glass Water", "note": "330ml", "price": 180 },
+      { "id": "perrier", "name": "Perrier Sparkling", "note": "natural mineral · 330ml", "price": 195 },
+      { "id": "himalayan-water", "name": "Himalayan Water", "note": "750ml", "price": 250 }
+    ]},
+    { "id": "drink-addons", "title": "Drink Add-ons", "station": "bar", "items": [
+      { "id": "addon-oat-almond-milk", "name": "Oat / Almond Milk", "note": "add-on", "price": 100 },
+      { "id": "addon-alt-milk", "name": "Soy / Lactose-Free / Skimmed Milk", "note": "add-on", "price": 60 },
+      { "id": "addon-decaf", "name": "Decaf Coffee", "note": "add-on", "price": 150 },
+      { "id": "addon-double-shot", "name": "Double Shot (Matcha/Hojicha)", "note": "add-on", "price": 80 },
+      { "id": "addon-foam-topper", "name": "Specialty Foam Topper", "note": "vanilla sweet cream · coconut cream", "price": 80 }
+    ]},
+    { "id": "brekkie", "title": "All-Day Brekkie", "station": "kitchen", "items": [
+      { "id": "pink-city-turkish-eggs", "name": "The Pink City Turkish Eggs", "note": "poached eggs · beetroot labneh · chilli oil · sourdough", "price": 550 },
+      { "id": "amsterdam-board", "name": "Amsterdam Brekkie Board", "note": "halloumi · avocado · rösti · mushrooms · omelette", "price": 850 },
+      { "id": "eggs-scrambled", "name": "Eggs Your Way — Scrambled", "note": "3 eggs · sourdough", "price": 290 },
+      { "id": "eggs-fried", "name": "Eggs Your Way — Fried", "note": "3 eggs · sourdough", "price": 290 },
+      { "id": "eggs-poached", "name": "Eggs Your Way — Poached", "note": "3 eggs · sourdough", "price": 290 },
+      { "id": "french-omelette", "name": "French Omelette", "note": "3 eggs · sourdough", "price": 310 },
+      { "id": "cheese-omelette", "name": "Cheese Omelette", "note": "3 eggs · sourdough", "price": 350 },
+      { "id": "desi-masala-omelette", "name": "Desi Masala Omelette", "note": "3 eggs · sourdough", "price": 310 },
+      { "id": "classic-shirred-eggs", "name": "Classic Shirred Eggs", "note": "baked eggs · peppers · garlic cheese · sourdough", "price": 550 },
+      { "id": "ragi-pancakes", "name": "Ragi Pancakes", "note": "cashew cream · fruits · granola · agave · veg", "price": 580 },
+      { "id": "fruity-french-toast", "name": "Fruity French Toast", "note": "brioche · custard · berry coulis", "price": 450 },
+      { "id": "burrata-shakshuka", "name": "Burrata Shakshuka", "note": "tomato pepper stew · burrata · sourdough · veg", "price": 690 },
+      { "id": "avo-toast", "name": "Avo Toast with Benefits", "note": "avocado · pesto · feta · sauerkraut · veg", "price": 610 },
+      { "id": "chia-pudding-bowl", "name": "Chia Pudding & Fresh Fruit Bowl", "note": "chia · granola · coconut milk · vegan", "price": 560 },
+      { "id": "berry-smoothie-bowl", "name": "Berry Smoothie Bowl", "note": "berries · banana · oats · vegan", "price": 720 },
+      { "id": "green-smoothie-bowl", "name": "Green Smoothie Bowl", "note": "spinach · avocado · mango · vegan", "price": 610 }
+    ]},
+    { "id": "snacks", "title": "Courtyard Snacks", "station": "kitchen", "items": [
+      { "id": "salted-fries", "name": "Salted Fries", "note": "golden · crispy · vegan", "price": 310 },
+      { "id": "podi-podi-fries", "name": "Podi-Podi Fries", "note": "spicy tangy rub · veg", "price": 380 },
+      { "id": "truffle-parmesan-fries", "name": "Truffle & Parmesan Fries", "note": "truffle · parmesan · veg", "price": 480 },
+      { "id": "manila-cigar-rolls", "name": "Manila Cigar Rolls", "note": "tofu · peanuts · nam jim · vegan", "price": 510 },
+      { "id": "hot-chicken-strips", "name": "Hot Chicken Strips", "note": "panko fried · naga miso · non-veg", "price": 560 }
+    ]},
+    { "id": "between-breads", "title": "Between Breads", "station": "kitchen", "items": [
+      { "id": "doppler-melt-paneer", "name": "The Doppler Melt — Chipotle Paneer", "note": "focaccia · mint ranch · fries · veg", "price": 470 },
+      { "id": "doppler-melt-chicken", "name": "The Doppler Melt — Chicken", "note": "focaccia · diablo mayo · fries · non-veg", "price": 510 },
+      { "id": "big-bean-burger", "name": "The Big Bean Burger", "note": "veg patty · avocado · fries · veg", "price": 580 },
+      { "id": "nashville-chicken-burger", "name": "Nashville Chicken Burger", "note": "fried chicken · brioche · fries · non-veg", "price": 530 },
+      { "id": "classic-cheese-toastie", "name": "Classic Cheese Toastie", "note": "sourdough · mozzarella · veg", "price": 310 },
+      { "id": "garlic-cheese-toastie", "name": "Garlic Butter & Mixed Cheese Toastie", "note": "garlic butter · veg", "price": 330 },
+      { "id": "spicy-cheese-toastie", "name": "Spicy Cheese Toastie", "note": "spicy kick · veg", "price": 350 },
+      { "id": "kimchi-cheese-toastie", "name": "Kimchi Cheese Toastie", "note": "house kimchi · non-veg", "price": 380 }
+    ]},
+    { "id": "pizzette", "title": "Pizzette", "station": "kitchen", "items": [
+      { "id": "pizzette-veg", "name": "Loaded Vegetarian Pizzette", "note": "artichokes · olives · peppers · veg", "price": 690 },
+      { "id": "pizzette-margherita", "name": "OG Margherita Pizzette", "note": "buffalo mozzarella · basil · veg", "price": 480 },
+      { "id": "pizzette-cajun-paneer", "name": "Cajun Cottage Cheese Pizzette", "note": "cajun paneer · jalapeño · veg", "price": 450 },
+      { "id": "pizzette-peri-chicken", "name": "Peri Peri Chicken Pizzette", "note": "peri peri chicken · non-veg", "price": 550 },
+      { "id": "pizzette-pepperoni", "name": "Pepperoni Pizzette", "note": "pork pepperoni · non-veg", "price": 480 }
+    ]},
+    { "id": "bowls", "title": "Bowls", "station": "kitchen", "items": [
+      { "id": "thai-curry-bowl", "name": "Thai Curry & Rice Bowl", "note": "green thai curry · jasmine rice · vegan", "price": 680 },
+      { "id": "rachel-salad-paneer", "name": "Rachel Green's Salad — Paneer", "note": "quinoa · chickpeas · feta · veg", "price": 380 },
+      { "id": "rachel-salad-chicken", "name": "Rachel Green's Salad — Chicken", "note": "quinoa · chickpeas · feta · non-veg", "price": 420 },
+      { "id": "grilled-chicken-rocket-salad", "name": "Grilled Chicken & Rocket Salad", "note": "rocket · feta · seeds · non-veg", "price": 490 },
+      { "id": "burrito-bowl-paneer", "name": "Burrito Bowl — Chipotle Cottage Cheese", "note": "guacamole · refried beans · veg", "price": 780 },
+      { "id": "burrito-bowl-chicken", "name": "Burrito Bowl — Chipotle Grilled Chicken", "note": "guacamole · refried beans · non-veg", "price": 820 }
+    ]},
+    { "id": "me-plates", "title": "Me Plates", "station": "kitchen", "items": [
+      { "id": "almost-spaghetti", "name": "'Almost Spaghetti' Tomato Caponata", "note": "linguine · olives · parmesan · veg", "price": 580 },
+      { "id": "greek-gyros-falafel", "name": "Greek Gyros Plate — Falafel", "note": "pita · toum · tzatziki · fries · veg", "price": 570 },
+      { "id": "greek-gyros-chicken", "name": "Greek Gyros Plate — Chicken", "note": "pita · toum · tzatziki · fries · non-veg", "price": 610 },
+      { "id": "roasti-paneer", "name": "Open Face Potato 'Roasti' — Cajun Paneer", "note": "rösti · kimchi · cheddar · veg", "price": 450 },
+      { "id": "roasti-chicken", "name": "Open Face Potato 'Roasti' — Cajun Chicken", "note": "rösti · kimchi · cheddar · non-veg", "price": 490 },
+      { "id": "creamy-pesto-linguine", "name": "Creamy Pesto Linguine", "note": "basil pesto · bocconcini · garlic bread · veg", "price": 660 },
+      { "id": "doppler-chicken-schnitzel", "name": "Doppler Chicken Schnitzel", "note": "harissa cream · fries · non-veg", "price": 580 }
+    ]},
+    { "id": "we-plates", "title": "We Plates", "station": "kitchen", "items": [
+      { "id": "crispy-parmigiana-eggplant", "name": "Crispy Parmigiana Eggplant", "note": "fritters · truffle cheese · parmesan · veg", "price": 750 },
+      { "id": "burnt-ends-lasagna-veg", "name": "Burnt Ends Lasagna Roulade — Veg", "note": "béchamel · mozzarella · garlic bread · veg", "price": 550 },
+      { "id": "burnt-ends-lasagna-chicken", "name": "Burnt Ends Lasagna Roulade — Chicken", "note": "béchamel · mozzarella · garlic bread · non-veg", "price": 590 },
+      { "id": "mezze-falafel", "name": "Mezze Board — Veg Falafel", "note": "hummus · labneh · baba ganoush · pita · veg", "price": 550 },
+      { "id": "mezze-chicken", "name": "Mezze Board — Grilled Chicken", "note": "hummus · labneh · pita · non-veg", "price": 590 },
+      { "id": "fish-n-chips", "name": "Fish n Chips", "note": "beer-battered · mushy peas · tartare · non-veg", "price": 680 },
+      { "id": "lamb-pappardelle", "name": "Lamb Pappardelle", "note": "pulled lamb · tomato · parmesan · non-veg", "price": 690 },
+      { "id": "adana-mutton-skewer", "name": "Adana Mutton Tortilla Skewer", "note": "mutton keema · tzatziki · non-veg", "price": 890 }
+    ]},
+    { "id": "counter", "title": "On the Counter", "station": "kitchen", "items": [
+      { "id": "croissant", "name": "Croissant", "note": "buttery · flaky", "price": 250 },
+      { "id": "pain-au-chocolat", "name": "Pain au Chocolat", "note": "chocolate", "price": 290 },
+      { "id": "doppler-brookie", "name": "Doppler Brookie", "note": "brownie · cookie", "price": 120 },
+      { "id": "madeleines", "name": "Madeleines (2 pieces)", "note": "orange zest · buttery", "price": 160 },
+      { "id": "peach-apple-cake", "name": "Peach & Apple Swirl Cake Slice", "note": "gluten-free · cream cheese", "price": 190 }
+    ]},
+    { "id": "soft-serve", "title": "Soft Serve", "station": "kitchen", "items": [
+      { "id": "vanilla-swirl", "name": "Classic Vanilla Swirl", "note": "silky · gluten-free · veg", "price": 185 },
+      { "id": "chocolate-swirl", "name": "Chocolate Swirl", "note": "rich · gluten-free · veg", "price": 270 },
+      { "id": "matchaffogato", "name": "Matchaffogato", "note": "vanilla soft serve · hot matcha", "price": 240 },
+      { "id": "cookie-crumble-soft-serve", "name": "Cookie Crumble Soft Serve", "note": "vanilla · cookie crumble", "price": 240 },
+      { "id": "seasonal-fruit-trifle", "name": "Seasonal Fruit Trifle with Granola", "note": "vanilla · fruit · caramel · granola", "price": 280 },
+      { "id": "dolce-caprese", "name": "Dolce Caprese (Dua Lipa)", "note": "vanilla · EVOO · basil · tomato salt", "price": 340 }
+    ]},
+    { "id": "desserts", "title": "Desserts", "station": "kitchen", "items": [
+      { "id": "basque-cheesecake", "name": "Basque Cheesecake", "note": "burnt-top · berry coulis · salted caramel", "price": 550 },
+      { "id": "doppler-mousse", "name": "Doppler Mousse", "note": "coffee-chocolate · almond · espresso salt", "price": 550 },
+      { "id": "apple-pie", "name": "Apple Pie with Vanilla Ice Cream", "note": "cinnamon apple · vanilla soft serve", "price": 490 },
+      { "id": "honey-toast", "name": "Honey Toast + Ice Cream", "note": "milk bread · honey · vanilla soft serve", "price": 350 },
+      { "id": "mango-profiteroles", "name": "Mango Profiteroles (3 pieces)", "note": "choux · mango · vanilla custard", "price": 250 }
+    ]},
+    { "id": "tubbies", "title": "Tubbies", "station": "kitchen", "items": [
+      { "id": "tubbie-dark-choc-sea-salt", "name": "Tubbie — Dark Chocolate Sea Salt", "note": "cake · frosting · crumble", "price": 399 },
+      { "id": "tubbie-old-school-pineapple", "name": "Tubbie — Old School Pineapple", "note": "vanilla cake · pineapple", "price": 399 },
+      { "id": "tubbie-dark-choc-tropical", "name": "Tubbie — Dark Chocolate & Tropical Fruit", "note": "seasonal special", "price": 399 },
+      { "id": "tubbie-french-vanilla-lemon", "name": "Tubbie — French Vanilla & Lemon Curd", "note": "vanilla · lemon curd", "price": 399 },
+      { "id": "tubbie-fresh-mango-vanilla", "name": "Tubbie — Fresh Mango & Vanilla", "note": "seasonal special", "price": 399 }
+    ]},
+    { "id": "food-addons", "title": "Food Add-ons", "station": "kitchen", "items": [
+      { "id": "addon-grilled-chicken", "name": "Grilled Chicken", "note": "add-on", "price": 150 },
+      { "id": "addon-chicken-sausage", "name": "Chicken Sausage (single)", "note": "add-on", "price": 100 },
+      { "id": "addon-bacon", "name": "Bacon (2 strips)", "note": "add-on", "price": 180 },
+      { "id": "addon-pork-pepperoni", "name": "Pork Pepperoni", "note": "add-on", "price": 120 },
+      { "id": "addon-fried-egg", "name": "Fried Egg (to order)", "note": "add-on", "price": 70 },
+      { "id": "addon-boiled-egg", "name": "Hard-Boiled Egg", "note": "add-on", "price": 60 },
+      { "id": "addon-sliced-avocado", "name": "Sliced Avocado", "note": "add-on", "price": 280 },
+      { "id": "addon-grilled-halloumi", "name": "Grilled Halloumi", "note": "add-on", "price": 360 },
+      { "id": "addon-burrata", "name": "Burrata", "note": "add-on", "price": 220 },
+      { "id": "addon-paneer", "name": "Paneer", "note": "add-on", "price": 70 },
+      { "id": "addon-firm-tofu", "name": "Firm Tofu", "note": "add-on", "price": 80 },
+      { "id": "addon-creamy-spinach", "name": "Creamy Spinach", "note": "add-on", "price": 130 },
+      { "id": "addon-mushrooms", "name": "Sautéed Mushrooms", "note": "add-on", "price": 65 },
+      { "id": "addon-seasonal-veg", "name": "Sautéed Seasonal Vegetables", "note": "add-on", "price": 100 },
+      { "id": "addon-hash-brown", "name": "Hash Brown", "note": "add-on", "price": 80 },
+      { "id": "addon-sourdough-slice", "name": "Toasted Sourdough Slice", "note": "add-on", "price": 60 },
+      { "id": "addon-parmesan", "name": "Shaved Parmesan", "note": "add-on", "price": 80 },
+      { "id": "addon-sauerkraut", "name": "Sauerkraut", "note": "add-on", "price": 80 },
+      { "id": "addon-pickled-veg", "name": "House Pickled Vegetables", "note": "add-on", "price": 50 },
+      { "id": "addon-fresh-fruits", "name": "Fresh Fruits", "note": "add-on", "price": 120 },
+      { "id": "addon-butter", "name": "Butter", "note": "add-on", "price": 50 },
+      { "id": "addon-maple-syrup", "name": "Maple Syrup", "note": "add-on", "price": 40 },
+      { "id": "addon-jalapeno", "name": "Jalapeño", "note": "add-on", "price": 40 },
+      { "id": "addon-chilli-jam", "name": "Chilli Jam", "note": "add-on", "price": 25 },
+      { "id": "addon-extra-jasmine-rice", "name": "Extra Jasmine Rice", "note": "add-on", "price": 80 }
     ]}
   ]
 }
