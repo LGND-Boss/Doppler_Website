@@ -26,7 +26,22 @@ html, body {
   cursor: none;
 }
 
-body.no-custom-cursor { cursor: auto; }
+/* When the custom cursor isn't active (e.g. order/admin pages, or the tweak
+   toggle), restore native cursors everywhere — not just on <body> — since many
+   components set `cursor: none` individually. */
+body.no-custom-cursor,
+body.no-custom-cursor * { cursor: auto; }
+body.no-custom-cursor a,
+body.no-custom-cursor button,
+body.no-custom-cursor .tab,
+body.no-custom-cursor [role="button"],
+body.no-custom-cursor input[type="submit"],
+body.no-custom-cursor input[type="button"] { cursor: pointer; }
+body.no-custom-cursor input,
+body.no-custom-cursor textarea { cursor: text; }
+body.no-custom-cursor input[type="checkbox"],
+body.no-custom-cursor input[type="radio"],
+body.no-custom-cursor select { cursor: pointer; }
 
 /* Warm grain — paper / plaster */
 .grain {
