@@ -29,8 +29,17 @@
     me: () => req('GET', '/api/me'),
 
     // staff: orders
-    listOrders: (status) => req('GET', '/api/orders' + (status ? '?status=' + status : '')),
+    listOrders: (opts) => {
+      const o = opts || {};
+      const qs = new URLSearchParams();
+      if (o.status) qs.set('status', o.status);
+      if (o.station) qs.set('station', o.station);
+      if (o.active) qs.set('active', '1');
+      const s = qs.toString();
+      return req('GET', '/api/orders' + (s ? '?' + s : ''));
+    },
     setStatus: (id, status) => req('POST', '/api/orders/' + id + '/status', { status }),
+    setReady: (id, station) => req('POST', '/api/orders/' + id + '/ready', { station }),
     payOrder: (id) => req('POST', '/api/orders/' + id + '/pay'),
     redeemOrder: (id, points) => req('POST', '/api/orders/' + id + '/redeem', { points }),
     streamBoard: (onMsg) => {
@@ -52,5 +61,11 @@
     // staff: settings
     getSettings: () => req('GET', '/api/settings'),
     putSettings: (patch) => req('PUT', '/api/settings', patch),
+
+    // admin: staff accounts
+    listStaff: () => req('GET', '/api/staff'),
+    createStaff: (email, password, role) => req('POST', '/api/staff', { email, password, role }),
+    updateStaff: (id, patch) => req('PATCH', '/api/staff/' + id, patch),
+    deleteStaff: (id) => req('DELETE', '/api/staff/' + id),
   };
 })();

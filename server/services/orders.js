@@ -1,6 +1,6 @@
 const db = require('../db');
 const { publish } = require('../events');
-const { priceMap, nameMap } = require('../menu-prices');
+const { priceMap, nameMap, stationMap } = require('../menu-prices');
 const { cartSubtotal, pointsForSpend, validateRedeem, redeemValue, taxFor } = require('./points');
 
 async function getSettings() {
@@ -17,11 +17,21 @@ async function recentHistory(client, customerId, limit = 5) {
   return rows;
 }
 
-// Normalize client items into [{id, name, qty, price}] using server prices.
+// Normalize client items into [{id, name, qty, price, station}] using server data.
 function buildLineItems(items) {
   return items.map(({ id, qty, note }) => ({
-    id, qty, note: note || '', name: nameMap[id], price: priceMap[id],
+    id, qty, note: note || '', name: nameMap[id], price: priceMap[id], station: stationMap[id],
   }));
+}
+
+// Derive the overall status from per-station readiness. 'paid'/'cancelled' are terminal
+// and never recomputed here.
+function deriveStatus(order) {
+  const barDone = !order.needs_bar || order.bar_ready;
+  const kitchenDone = !order.needs_kitchen || order.kitchen_ready;
+  if (barDone && kitchenDone) return 'served';
+  if (order.bar_ready || order.kitchen_ready) return 'preparing';
+  return 'new';
 }
 
 async function placeOrder({ seatId, email, name, items }) {
@@ -32,6 +42,8 @@ async function placeOrder({ seatId, email, name, items }) {
   const tax = taxFor(subtotal, taxPercent);
   const total = subtotal + tax;
   const estimatedPoints = pointsForSpend(subtotal, Number(settings.earn_per_rupee));
+  const needsBar = lineItems.some((l) => l.station === 'bar');
+  const needsKitchen = lineItems.some((l) => l.station === 'kitchen');
 
   return db.tx(async (client) => {
     const seatRes = await client.query('SELECT id, label, active FROM seats WHERE id = $1', [seatId]);
@@ -49,9 +61,9 @@ async function placeOrder({ seatId, email, name, items }) {
     const customer = custRes.rows[0];
 
     const orderRes = await client.query(
-      `INSERT INTO orders (seat_id, customer_id, items, subtotal, tax_amount)
-       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [seatId, customer.id, JSON.stringify(lineItems), subtotal, tax]
+      `INSERT INTO orders (seat_id, customer_id, items, subtotal, tax_amount, needs_bar, needs_kitchen)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      [seatId, customer.id, JSON.stringify(lineItems), subtotal, tax, needsBar, needsKitchen]
     );
     const orderId = orderRes.rows[0].id;
     const history = await recentHistory(client, customer.id);
@@ -75,6 +87,27 @@ async function setStatus(orderId, status) {
   publish('board', { type: 'status', orderId, status });
   publish('order:' + orderId, { status });
   return order;
+}
+
+// A station (bar|kitchen) marks its items ready; status is recomputed from flags.
+async function setStationReady(orderId, station) {
+  if (station !== 'bar' && station !== 'kitchen') throw new Error('invalid station');
+  const col = station === 'bar' ? 'bar_ready' : 'kitchen_ready';
+  return db.tx(async (client) => {
+    const ordRes = await client.query('SELECT * FROM orders WHERE id = $1 FOR UPDATE', [orderId]);
+    const order = ordRes.rows[0];
+    if (!order) throw new Error('order not found');
+    if (order.status === 'paid' || order.status === 'cancelled') throw new Error('order is closed');
+    const updatedFlags = { ...order, [col]: true };
+    const status = deriveStatus(updatedFlags);
+    const { rows } = await client.query(
+      `UPDATE orders SET ${col} = true, status = $2, updated_at = now() WHERE id = $1 RETURNING *`,
+      [orderId, status]
+    );
+    publish('board', { type: 'status', orderId, status });
+    publish('order:' + orderId, { status });
+    return rows[0];
+  });
 }
 
 async function markPaid(orderId) {
@@ -152,4 +185,4 @@ async function adjustPoints(customerId, delta, reason) {
   });
 }
 
-module.exports = { getSettings, placeOrder, setStatus, markPaid, redeemPoints, adjustPoints, recentHistory };
+module.exports = { getSettings, placeOrder, setStatus, setStationReady, markPaid, redeemPoints, adjustPoints, recentHistory };

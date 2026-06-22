@@ -45,6 +45,12 @@
     { "id": "smoothies", "title": "Smoothies", "items": [
       { "id": "avocado-smoothie", "name": "Avocado", "note": "avocado · honey · cold milk · ice", "price": 420 },
       { "id": "mixed-berries-smoothie", "name": "Mixed Berries", "note": "strawberry · blueberry · raspberry", "price": 420 }
+    ]},
+    { "id": "kitchen", "title": "Kitchen · Brick Oven", "station": "kitchen", "items": [
+      { "id": "avocado-toast", "name": "Avocado Sourdough Toast", "note": "sprouted seeds · sauerkraut", "price": 420 },
+      { "id": "apple-arugula-toast", "name": "Green Apple & Arugula Toast", "note": "sourdough · pistachio", "price": 380 },
+      { "id": "focaccia-plate", "name": "Focaccia Plate", "note": "olive oil · sea salt · all-day", "price": 320 },
+      { "id": "seasonal-cake", "name": "Slice of the Day", "note": "rotating cake · ask the counter", "price": 280 }
     ]}
   ]
 }

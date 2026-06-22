@@ -21,8 +21,20 @@ copy .env.example .env
 ::   PUBLIC_BASE_URL-> https://app.<yourdomain>  (set after step 4)
 npm install
 npm run init-db
-npm run create-user -- owner@doppler.coffee a-strong-password
+:: First account must be an admin:
+npm run create-user -- owner@doppler.coffee a-strong-password admin
 ```
+
+### Staff roles & the live-orders page
+Accounts have a role: **admin**, **cashier**, **bar**, or **kitchen**. Create them either with
+the CLI (`npm run create-user -- <email> <password> <role>`) or, more easily, in
+**Admin → Staff & Logins**.
+
+- **Admin** opens the full admin console (`/admin.html`).
+- **Bar / Kitchen / Cashier** open the **Live Orders page** (`/orders.html`) and nothing else:
+  - Bar & Kitchen each see only their station's items and tap **"ready"** when done.
+  - An order is **served** automatically once every involved station is ready.
+  - Cashier sees all active orders, takes payment (**Mark paid**, awards points) and **redeems** points.
 `npm run init-db` prints `schema applied`. `npm test` should report 7 passing tests.
 Optionally load sample seats: `psql -U doppler -d doppler -f seed.sql`.
 

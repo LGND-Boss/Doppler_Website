@@ -10,7 +10,11 @@
 <link rel="stylesheet" href="styles.css">
 <style>
   body { overflow-x: hidden; cursor: auto; background: var(--ink); color: var(--bone); }
-  body { font-family: 'Space Grotesk', sans-serif; }
+  /* Basic, high-readability system font across the admin console. */
+  body, h1, h2, h3, h4, p, label, input, textarea, select, button,
+  .tab, .panel, .a-top, .admin-h, .serif, table, .list, .help {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  }
 
   .admin {
     min-height: 100vh;
@@ -569,6 +573,7 @@
       <button type="submit" class="btn-a primary">Sign in <span class="arrow">→</span></button>
       <span id="gate-err" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #ff8c7a; margin-left: 12px; opacity: 0; transition: opacity 0.2s;">Wrong credentials.</span>
     </form>
+    <p id="gate-redirect" style="display:none; margin-top: 18px; font-size: 14px; line-height: 1.5;"></p>
     <p style="margin-top: 24px; font-size: 12px; opacity: 0.5; line-height: 1.5;">
       Staff accounts are created on the café server with <code style="font-family: 'JetBrains Mono', monospace; background: rgba(244,201,122,0.12); color: var(--ember); padding: 2px 6px;">npm run create-user</code>. Sessions are validated by the backend.
     </p>
@@ -605,6 +610,7 @@
       <button class="tab" data-tab="seats">§ Seats &amp; QR</button>
       <button class="tab" data-tab="customers">§ Customers</button>
       <button class="tab" data-tab="points">§ Points</button>
+      <button class="tab" data-tab="users">§ Staff &amp; Logins</button>
     </div>
 
     <!-- EVENTS PANEL -->
@@ -875,6 +881,31 @@
       <p id="settings-msg" class="help"></p>
     </div>
 
+    <!-- STAFF & LOGINS PANEL -->
+    <div class="panel" data-panel="users">
+      <div class="panel-head">
+        <h2>Staff &amp; logins</h2>
+      </div>
+      <p class="help" style="margin-bottom: 12px;">
+        Create accounts for your team and assign a role. <strong>Bar</strong> &amp; <strong>Kitchen</strong> log into the
+        <a href="orders.html" target="_blank" rel="noopener">Live Orders page</a> and see only their station; <strong>Cashier</strong> takes payment and redeems points; <strong>Admin</strong> can open this console.
+      </p>
+      <form id="staff-form" class="field-row" style="align-items: flex-end; gap: 12px; flex-wrap: wrap;">
+        <div class="field"><label>Email</label><input type="email" id="staff-email" placeholder="name@doppler.coffee" required/></div>
+        <div class="field"><label>Password</label><input type="text" id="staff-pass" placeholder="min 6 characters" required/></div>
+        <div class="field"><label>Role</label>
+          <select id="staff-role">
+            <option value="bar">Bar</option>
+            <option value="kitchen">Kitchen</option>
+            <option value="cashier">Cashier</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-a primary" style="margin-bottom: 2px;">+ Add staff</button>
+      </form>
+      <div id="staff-list" class="list" style="margin-top: 16px;"></div>
+    </div>
+
   </div>
 
   <div id="toast" class="toast">Saved.</div>
@@ -1011,8 +1042,22 @@ function closeApp() {
   gate.style.display = 'block';
 }
 
+// The admin console is admin-only. Non-admin staff are pointed at the live-orders page.
+function enter(me) {
+  if (me && me.role === 'admin') {
+    document.getElementById('gate-redirect').style.display = 'none';
+    openApp();
+  } else {
+    const r = document.getElementById('gate-redirect');
+    r.style.display = 'block';
+    r.innerHTML = 'This is a <strong>' + (me ? me.role : 'station') +
+      '</strong> account — the admin console is for admins only.<br/>' +
+      '<a href="orders.html" style="color: var(--ember);">→ Open the Live Orders page</a>';
+  }
+}
+
 // On load, ask the server whether we already have a valid staff session.
-window.DopplerAPI.me().then(openApp).catch(() => {});
+window.DopplerAPI.me().then(enter).catch(() => {});
 
 document.getElementById('gate-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -1020,9 +1065,9 @@ document.getElementById('gate-form').addEventListener('submit', async (e) => {
   const pass = document.getElementById('gate-pass').value;
   const err = document.getElementById('gate-err');
   try {
-    await window.DopplerAPI.login(email, pass);
+    const me = await window.DopplerAPI.login(email, pass);
     err.style.opacity = '0';
-    openApp();
+    enter(me);
   } catch (_) {
     err.style.opacity = '1';
     setTimeout(() => { err.style.opacity = '0'; }, 1800);
@@ -1709,34 +1754,42 @@ function renderAll() {
 
   function bootStaff() {
     if (booted) return; booted = true;
-    initOrders(); initSeats(); initCustomers(); initSettings();
+    initOrders(); initSeats(); initCustomers(); initSettings(); initUsers();
   }
   window.bootStaff = bootStaff;
 
   // ---- Orders board (live via SSE) ----
-  const ADVANCE = { new: 'preparing', preparing: 'served', served: null };
+  function stationBadge(needed, ready, name) {
+    if (!needed) return '';
+    return '<span style="font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid ' +
+      (ready ? '#86efac;background:#dcfce7;color:#166534' : '#fde047;background:#fef9c3;color:#854d0e') +
+      ';">' + name + ' ' + (ready ? '✓' : '…') + '</span>';
+  }
   async function renderOrders() {
     let orders;
-    try { orders = await API.listOrders(); } catch (e) { return; }
+    try { orders = await API.listOrders({ active: 1 }); } catch (e) { return; }
     const board = document.getElementById('orders-board');
     board.innerHTML = '';
-    const live = orders.filter(o => o.status !== 'cancelled');
-    if (!live.length) { board.innerHTML = '<p class="help">No orders yet.</p>'; return; }
-    live.forEach((o) => {
-      const items = (o.items || []).map(i => escapeHtml(i.qty + '× ' + i.name)).join(', ');
-      const next = ADVANCE[o.status];
+    if (!orders.length) { board.innerHTML = '<p class="help">No active orders.</p>'; return; }
+    orders.forEach((o) => {
+      const fmt = (arr) => arr.map(i => escapeHtml(i.qty + '× ' + i.name)).join(', ');
+      const bar = (o.items || []).filter(i => i.station === 'bar');
+      const kit = (o.items || []).filter(i => i.station === 'kitchen');
+      const total = o.subtotal + (o.tax_amount || 0);
       const card = document.createElement('div');
-      card.className = 'list-row';
       card.style.cssText = 'display:flex;flex-direction:column;gap:6px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,.08);';
       card.innerHTML =
-        '<div><strong>' + escapeHtml(o.seat_label) + '</strong> · <span style="text-transform:uppercase;font-family:\'JetBrains Mono\',monospace;font-size:11px;opacity:.7;">' + escapeHtml(o.status) + '</span> · ₹' + o.subtotal + (o.tax_amount ? ' + ₹' + o.tax_amount + ' tax = <strong>₹' + (o.subtotal + o.tax_amount) + '</strong>' : '') + '</div>' +
+        '<div><strong>' + escapeHtml(o.seat_label) + '</strong> · <span style="text-transform:uppercase;font-size:11px;opacity:.7;">' + escapeHtml(o.status) + '</span> · <strong>₹' + total + '</strong>' + (o.tax_amount ? ' <span style="opacity:.6;font-size:12px;">(incl ₹' + o.tax_amount + ' tax)</span>' : '') + '</div>' +
         '<div style="font-size:12px;opacity:.65;">' + escapeHtml(o.customer_email) + '</div>' +
-        '<div style="font-size:13px;">' + items + '</div>' +
+        (bar.length ? '<div style="font-size:13px;"><b>Bar:</b> ' + fmt(bar) + '</div>' : '') +
+        (kit.length ? '<div style="font-size:13px;"><b>Kitchen:</b> ' + fmt(kit) + '</div>' : '') +
+        '<div style="display:flex;gap:6px;">' + stationBadge(o.needs_bar, o.bar_ready, 'Bar') + stationBadge(o.needs_kitchen, o.kitchen_ready, 'Kitchen') + '</div>' +
         '<div class="actions" style="gap:8px;">' +
-          (next ? '<button class="btn-a" data-act="status" data-id="' + o.id + '" data-status="' + next + '">→ ' + next + '</button>' : '') +
-          (o.status !== 'paid' && o.status !== 'cancelled' ? '<button class="btn-a primary" data-act="pay" data-id="' + o.id + '">Mark paid</button>' : '') +
+          (o.needs_bar && !o.bar_ready ? '<button class="btn-a" data-act="ready" data-station="bar" data-id="' + o.id + '">Bar ready</button>' : '') +
+          (o.needs_kitchen && !o.kitchen_ready ? '<button class="btn-a" data-act="ready" data-station="kitchen" data-id="' + o.id + '">Kitchen ready</button>' : '') +
+          (o.status !== 'paid' ? '<button class="btn-a primary" data-act="pay" data-id="' + o.id + '">Mark paid</button>' : '') +
           (o.status === 'paid' ? '<button class="btn-a" data-act="redeem" data-id="' + o.id + '">Redeem pts</button>' : '') +
-          (o.status !== 'paid' && o.status !== 'cancelled' ? '<button class="btn-a" data-act="status" data-id="' + o.id + '" data-status="cancelled">Cancel</button>' : '') +
+          (o.status !== 'paid' ? '<button class="btn-a" data-act="cancel" data-id="' + o.id + '">Cancel</button>' : '') +
         '</div>';
       board.appendChild(card);
     });
@@ -1749,7 +1802,8 @@ function renderAll() {
       const b = e.target.closest('button'); if (!b) return;
       const id = b.dataset.id;
       try {
-        if (b.dataset.act === 'status') { await API.setStatus(id, b.dataset.status); }
+        if (b.dataset.act === 'ready') { await API.setReady(id, b.dataset.station); }
+        else if (b.dataset.act === 'cancel') { await API.setStatus(id, 'cancelled'); }
         else if (b.dataset.act === 'pay') { const r = await API.payOrder(id); toast('Paid · +' + r.pointsEarned + ' pts (balance ' + r.pointsBalance + ')'); }
         else if (b.dataset.act === 'redeem') {
           const p = parseInt(prompt('Points to redeem:'), 10);
@@ -1863,6 +1917,58 @@ function renderAll() {
         document.getElementById('settings-msg').textContent = 'Saved.';
         toast('Settings saved.');
       } catch (e) { document.getElementById('settings-msg').textContent = e.message; }
+    });
+  }
+
+  // ---- Staff & logins ----
+  async function renderStaff() {
+    let staff;
+    try { staff = await API.listStaff(); } catch (e) { return; }
+    const list = document.getElementById('staff-list');
+    list.innerHTML = '';
+    staff.forEach((u) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.08);';
+      row.innerHTML =
+        '<div style="flex:1;"><strong>' + escapeHtml(u.email) + '</strong></div>' +
+        '<select data-role="' + u.id + '">' +
+          ['bar', 'kitchen', 'cashier', 'admin'].map(r => '<option value="' + r + '"' + (u.role === r ? ' selected' : '') + '>' + r + '</option>').join('') +
+        '</select>' +
+        '<button class="btn-a" data-reset="' + u.id + '">Reset password</button>' +
+        '<button class="btn-a danger" data-del="' + u.id + '">Delete</button>';
+      list.appendChild(row);
+    });
+  }
+  function initUsers() {
+    renderStaff();
+    document.getElementById('staff-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await API.createStaff(
+          document.getElementById('staff-email').value,
+          document.getElementById('staff-pass').value,
+          document.getElementById('staff-role').value
+        );
+        e.target.reset(); renderStaff(); toast('Staff added.');
+      } catch (err) { alert(err.message); }
+    });
+    const list = document.getElementById('staff-list');
+    list.addEventListener('change', async (e) => {
+      const sel = e.target.closest('[data-role]'); if (!sel) return;
+      try { await API.updateStaff(sel.dataset.role, { role: sel.value }); toast('Role updated.'); }
+      catch (err) { alert(err.message); renderStaff(); }
+    });
+    list.addEventListener('click', async (e) => {
+      const reset = e.target.closest('[data-reset]');
+      const del = e.target.closest('[data-del]');
+      try {
+        if (reset) {
+          const pw = prompt('New password (min 6 chars):');
+          if (pw) { await API.updateStaff(reset.dataset.reset, { password: pw }); toast('Password reset.'); }
+        } else if (del) {
+          if (confirm('Delete this staff account?')) { await API.deleteStaff(del.dataset.del); renderStaff(); toast('Deleted.'); }
+        }
+      } catch (err) { alert(err.message); }
     });
   }
 })();

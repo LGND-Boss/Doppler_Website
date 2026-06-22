@@ -3,18 +3,23 @@ const bcrypt = require('bcrypt');
 const db = require('../db');
 
 async function main() {
-  const [, , email, password] = process.argv;
+  const [, , email, password, roleArg] = process.argv;
+  const role = roleArg || 'admin';
   if (!email || !password) {
-    console.error('Usage: npm run create-user -- <email> <password>');
+    console.error('Usage: npm run create-user -- <email> <password> [admin|cashier|bar|kitchen]');
+    process.exit(1);
+  }
+  if (!['admin', 'cashier', 'bar', 'kitchen'].includes(role)) {
+    console.error('Invalid role:', role, '(use admin|cashier|bar|kitchen)');
     process.exit(1);
   }
   const hash = await bcrypt.hash(password, 12);
   await db.query(
-    `INSERT INTO staff_users (email, password_hash) VALUES ($1, $2)
-     ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
-    [email, hash]
+    `INSERT INTO staff_users (email, password_hash, role) VALUES ($1, $2, $3)
+     ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, role = EXCLUDED.role`,
+    [email, hash, role]
   );
-  console.log('staff user ready:', email);
+  console.log(`staff user ready: ${email} (${role})`);
   await db.pool.end();
 }
 

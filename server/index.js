@@ -18,6 +18,7 @@ app.use('/api/orders', require('./routes/orders'));
 app.use('/api/seats', require('./routes/seats'));
 app.use('/api/customers', require('./routes/customers'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/staff', require('./routes/staff'));
 
 // Static site (order.html, admin.html, index.html, assets) — same origin as API.
 // server/ lives inside the site repo, so the static root is the parent directory.

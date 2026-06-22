@@ -1,0 +1,49 @@
+/* Plain, high-readability system font for staff-facing screens. */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px; background: #111827; color: #f9fafb;
+}
+.topbar .who { font-size: 14px; }
+.topbar .role-badge { text-transform: uppercase; letter-spacing: .08em; font-size: 11px; font-weight: 700; background: #374151; padding: 3px 9px; border-radius: 999px; margin-left: 8px; }
+.topbar button { background: #374151; color: #f9fafb; border: 0; padding: 8px 14px; border-radius: 6px; cursor: pointer; font: inherit; }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 18px; }
+.hint { color: #6b7280; padding: 30px 0; text-align: center; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+.card.done { opacity: .55; }
+.card .seat { font-size: 18px; font-weight: 700; }
+.card .meta { font-size: 12px; color: #6b7280; margin: 2px 0 10px; }
+.line { display: flex; justify-content: space-between; padding: 5px 0; font-size: 15px; }
+.line .q { font-weight: 700; margin-right: 6px; }
+.section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #6b7280; margin-top: 10px; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.badge { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid #d1d5db; }
+.badge.ok { background: #dcfce7; border-color: #86efac; color: #166534; }
+.badge.wait { background: #fef9c3; border-color: #fde047; color: #854d0e; }
+.totals { border-top: 1px solid #e5e7eb; margin-top: 8px; padding-top: 8px; font-size: 14px; }
+.totals .grand { font-weight: 700; font-size: 16px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.btn { border: 0; padding: 10px 14px; border-radius: 7px; cursor: pointer; font: inherit; font-weight: 600; }
+.btn.primary { background: #111827; color: #fff; }
+.btn.ready { background: #16a34a; color: #fff; }
+.btn.ghost { background: #f3f4f6; color: #111827; border: 1px solid #d1d5db; }
+.btn:disabled { opacity: .5; cursor: default; }
+
+/* Login */
+.login { max-width: 340px; margin: 12vh auto; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 28px; }
+.login h1 { font-size: 22px; margin: 0 0 4px; }
+.login p { color: #6b7280; font-size: 13px; margin: 0 0 18px; }
+.login input { width: 100%; padding: 11px 13px; border: 1px solid #d1d5db; border-radius: 7px; font: inherit; margin: 7px 0; }
+.login .btn { width: 100%; margin-top: 8px; }
+.err { color: #b91c1c; font-size: 13px; min-height: 18px; }

@@ -19,16 +19,27 @@ function requireStaff(req, res, next) {
   return res.status(401).json({ error: 'not authenticated' });
 }
 
+// Allow only the given roles. Always allows 'admin'.
+function requireRole(...roles) {
+  return (req, res, next) => {
+    if (!(req.session && req.session.staffId)) return res.status(401).json({ error: 'not authenticated' });
+    const role = req.session.role;
+    if (role === 'admin' || roles.includes(role)) return next();
+    return res.status(403).json({ error: 'forbidden for role: ' + role });
+  };
+}
+
 async function login(req, res) {
   const { email, password } = req.body || {};
   if (!email || !password) return res.status(400).json({ error: 'email and password required' });
-  const { rows } = await db.query('SELECT id, password_hash FROM staff_users WHERE email = $1', [email]);
+  const { rows } = await db.query('SELECT id, password_hash, role FROM staff_users WHERE email = $1', [email]);
   const user = rows[0];
   const ok = user && (await bcrypt.compare(password, user.password_hash));
   if (!ok) return res.status(401).json({ error: 'invalid credentials' });
   req.session.staffId = user.id;
   req.session.email = email;
-  res.json({ email });
+  req.session.role = user.role;
+  res.json({ email, role: user.role });
 }
 
 function logout(req, res) {
@@ -36,8 +47,8 @@ function logout(req, res) {
 }
 
 function me(req, res) {
-  if (req.session && req.session.staffId) return res.json({ email: req.session.email });
+  if (req.session && req.session.staffId) return res.json({ email: req.session.email, role: req.session.role });
   res.status(401).json({ error: 'not authenticated' });
 }
 
-module.exports = { sessionMiddleware, requireStaff, login, logout, me };
+module.exports = { sessionMiddleware, requireStaff, requireRole, login, logout, me };

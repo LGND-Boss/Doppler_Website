@@ -30,6 +30,10 @@ CREATE TABLE IF NOT EXISTS orders (
   items           jsonb NOT NULL,
   subtotal        integer NOT NULL,
   tax_amount      integer NOT NULL DEFAULT 0,
+  needs_bar       boolean NOT NULL DEFAULT false,
+  needs_kitchen   boolean NOT NULL DEFAULT false,
+  bar_ready       boolean NOT NULL DEFAULT false,
+  kitchen_ready   boolean NOT NULL DEFAULT false,
   points_earned   integer NOT NULL DEFAULT 0,
   points_redeemed integer NOT NULL DEFAULT 0,
   notes           text,
@@ -59,14 +63,20 @@ CREATE TABLE IF NOT EXISTS staff_users (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email         citext UNIQUE NOT NULL,
   password_hash text NOT NULL,
+  role          text NOT NULL DEFAULT 'admin',
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 
 INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 
 -- Migrations for databases created before these columns existed (idempotent).
-ALTER TABLE settings ADD COLUMN IF NOT EXISTS tax_percent numeric NOT NULL DEFAULT 0;
-ALTER TABLE orders   ADD COLUMN IF NOT EXISTS tax_amount  integer NOT NULL DEFAULT 0;
+ALTER TABLE settings    ADD COLUMN IF NOT EXISTS tax_percent   numeric NOT NULL DEFAULT 0;
+ALTER TABLE orders      ADD COLUMN IF NOT EXISTS tax_amount    integer NOT NULL DEFAULT 0;
+ALTER TABLE orders      ADD COLUMN IF NOT EXISTS needs_bar     boolean NOT NULL DEFAULT false;
+ALTER TABLE orders      ADD COLUMN IF NOT EXISTS needs_kitchen boolean NOT NULL DEFAULT false;
+ALTER TABLE orders      ADD COLUMN IF NOT EXISTS bar_ready     boolean NOT NULL DEFAULT false;
+ALTER TABLE orders      ADD COLUMN IF NOT EXISTS kitchen_ready boolean NOT NULL DEFAULT false;
+ALTER TABLE staff_users ADD COLUMN IF NOT EXISTS role          text NOT NULL DEFAULT 'admin';
 
 CREATE INDEX IF NOT EXISTS idx_orders_status     ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC);
