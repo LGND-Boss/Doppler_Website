@@ -11,12 +11,13 @@ router.get('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-  const { earn_per_rupee, redeem_rupee_per_point, min_redeem_points, site_base_url } = req.body || {};
+  const { earn_per_rupee, redeem_rupee_per_point, min_redeem_points, tax_percent, site_base_url } = req.body || {};
   const { rows } = await db.query(
     `UPDATE settings SET
        earn_per_rupee = COALESCE($1, earn_per_rupee),
        redeem_rupee_per_point = COALESCE($2, redeem_rupee_per_point),
        min_redeem_points = COALESCE($3, min_redeem_points),
+       tax_percent = COALESCE($5, tax_percent),
        site_base_url = COALESCE($4, site_base_url)
      WHERE id = 1 RETURNING *`,
     [
@@ -24,6 +25,7 @@ router.put('/', async (req, res) => {
       redeem_rupee_per_point ?? null,
       Number.isInteger(min_redeem_points) ? min_redeem_points : null,
       typeof site_base_url === 'string' ? site_base_url : null,
+      (tax_percent === undefined || tax_percent === null || isNaN(tax_percent)) ? null : Number(tax_percent),
     ]
   );
   res.json(rows[0]);

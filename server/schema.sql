@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS orders (
   status          order_status NOT NULL DEFAULT 'new',
   items           jsonb NOT NULL,
   subtotal        integer NOT NULL,
+  tax_amount      integer NOT NULL DEFAULT 0,
   points_earned   integer NOT NULL DEFAULT 0,
   points_redeemed integer NOT NULL DEFAULT 0,
   notes           text,
@@ -50,6 +51,7 @@ CREATE TABLE IF NOT EXISTS settings (
   earn_per_rupee         numeric NOT NULL DEFAULT 0.1,
   redeem_rupee_per_point numeric NOT NULL DEFAULT 1,
   min_redeem_points      integer NOT NULL DEFAULT 50,
+  tax_percent            numeric NOT NULL DEFAULT 0,
   site_base_url          text NOT NULL DEFAULT ''
 );
 
@@ -61,6 +63,10 @@ CREATE TABLE IF NOT EXISTS staff_users (
 );
 
 INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+
+-- Migrations for databases created before these columns existed (idempotent).
+ALTER TABLE settings ADD COLUMN IF NOT EXISTS tax_percent numeric NOT NULL DEFAULT 0;
+ALTER TABLE orders   ADD COLUMN IF NOT EXISTS tax_amount  integer NOT NULL DEFAULT 0;
 
 CREATE INDEX IF NOT EXISTS idx_orders_status     ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC);

@@ -1,7 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const db = require('../db');
-const { placeOrder } = require('../services/orders');
+const { placeOrder, getSettings } = require('../services/orders');
 const { subscribe } = require('../events');
 
 const router = express.Router();
@@ -9,6 +9,14 @@ const router = express.Router();
 const orderLimiter = rateLimit({ windowMs: 60 * 1000, max: 8, standardHeaders: true, legacyHeaders: false });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Non-sensitive display config for the order page (tax %, earn rate).
+router.get('/config', async (req, res) => {
+  try {
+    const s = await getSettings();
+    res.json({ tax_percent: Number(s.tax_percent), earn_per_rupee: Number(s.earn_per_rupee) });
+  } catch (e) { res.status(500).json({ error: 'config unavailable' }); }
+});
 
 router.get('/seat/:id', async (req, res) => {
   try {

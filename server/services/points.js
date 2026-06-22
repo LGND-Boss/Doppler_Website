@@ -26,4 +26,9 @@ function redeemValue(points, redeemRupeePerPoint) {
   return Math.floor(points * redeemRupeePerPoint);
 }
 
-module.exports = { cartSubtotal, pointsForSpend, validateRedeem, redeemValue };
+// Tax on the pre-tax subtotal, in whole ₹.
+function taxFor(subtotal, taxPercent) {
+  return Math.max(0, Math.round(subtotal * (taxPercent || 0) / 100));
+}
+
+module.exports = { cartSubtotal, pointsForSpend, validateRedeem, redeemValue, taxFor };

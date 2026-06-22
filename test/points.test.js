@@ -1,7 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert');
 const {
-  cartSubtotal, pointsForSpend, validateRedeem, redeemValue,
+  cartSubtotal, pointsForSpend, validateRedeem, redeemValue, taxFor,
 } = require('../server/services/points');
 
 const PRICES = { espresso: 180, latte: 260 };
@@ -40,4 +40,11 @@ test('validateRedeem enforces minimum and balance', () => {
 test('redeemValue converts points to rupees floored', () => {
   assert.equal(redeemValue(100, 1), 100);
   assert.equal(redeemValue(100, 0.5), 50);
+});
+
+test('taxFor rounds tax on subtotal', () => {
+  assert.equal(taxFor(700, 5), 35);
+  assert.equal(taxFor(700, 0), 0);
+  assert.equal(taxFor(95, 5), 5);   // 4.75 -> 5
+  assert.equal(taxFor(700, undefined), 0);
 });

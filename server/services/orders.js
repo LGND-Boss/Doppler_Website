@@ -1,7 +1,7 @@
 const db = require('../db');
 const { publish } = require('../events');
 const { priceMap, nameMap } = require('../menu-prices');
-const { cartSubtotal, pointsForSpend, validateRedeem, redeemValue } = require('./points');
+const { cartSubtotal, pointsForSpend, validateRedeem, redeemValue, taxFor } = require('./points');
 
 async function getSettings() {
   const { rows } = await db.query('SELECT * FROM settings WHERE id = 1');
@@ -28,6 +28,9 @@ async function placeOrder({ seatId, email, name, items }) {
   const settings = await getSettings();
   const subtotal = cartSubtotal(items, priceMap); // throws on bad input
   const lineItems = buildLineItems(items);
+  const taxPercent = Number(settings.tax_percent);
+  const tax = taxFor(subtotal, taxPercent);
+  const total = subtotal + tax;
   const estimatedPoints = pointsForSpend(subtotal, Number(settings.earn_per_rupee));
 
   return db.tx(async (client) => {
@@ -46,15 +49,15 @@ async function placeOrder({ seatId, email, name, items }) {
     const customer = custRes.rows[0];
 
     const orderRes = await client.query(
-      `INSERT INTO orders (seat_id, customer_id, items, subtotal)
-       VALUES ($1, $2, $3, $4) RETURNING id`,
-      [seatId, customer.id, JSON.stringify(lineItems), subtotal]
+      `INSERT INTO orders (seat_id, customer_id, items, subtotal, tax_amount)
+       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+      [seatId, customer.id, JSON.stringify(lineItems), subtotal, tax]
     );
     const orderId = orderRes.rows[0].id;
     const history = await recentHistory(client, customer.id);
 
     const result = {
-      orderId, seatLabel: seat.label, subtotal, estimatedPoints,
+      orderId, seatLabel: seat.label, subtotal, taxPercent, tax, total, estimatedPoints,
       pointsBalance: customer.points, recentHistory: history,
     };
     publish('board', { type: 'new', orderId });

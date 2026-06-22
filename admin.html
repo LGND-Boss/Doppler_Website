@@ -863,6 +863,11 @@
         <div class="field"><label>Minimum redemption (points)</label><input type="number" id="set-min"/></div>
       </div>
       <div class="field">
+        <label>Tax (%)</label>
+        <input type="number" step="0.01" id="set-tax"/>
+        <span class="help">Applied to the order subtotal on the customer's cart. Points are still earned on the pre-tax subtotal.</span>
+      </div>
+      <div class="field">
         <label>Site base URL (used in QR codes)</label>
         <input type="url" id="set-url" placeholder="https://app.yourdomain.com"/>
         <span class="help">The public HTTPS URL of this server. QR codes encode &lt;base&gt;/order.html?seat=&lt;id&gt;.</span>
@@ -1724,7 +1729,7 @@ function renderAll() {
       card.className = 'list-row';
       card.style.cssText = 'display:flex;flex-direction:column;gap:6px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,.08);';
       card.innerHTML =
-        '<div><strong>' + escapeHtml(o.seat_label) + '</strong> · <span style="text-transform:uppercase;font-family:\'JetBrains Mono\',monospace;font-size:11px;opacity:.7;">' + escapeHtml(o.status) + '</span> · ₹' + o.subtotal + '</div>' +
+        '<div><strong>' + escapeHtml(o.seat_label) + '</strong> · <span style="text-transform:uppercase;font-family:\'JetBrains Mono\',monospace;font-size:11px;opacity:.7;">' + escapeHtml(o.status) + '</span> · ₹' + o.subtotal + (o.tax_amount ? ' + ₹' + o.tax_amount + ' tax = <strong>₹' + (o.subtotal + o.tax_amount) + '</strong>' : '') + '</div>' +
         '<div style="font-size:12px;opacity:.65;">' + escapeHtml(o.customer_email) + '</div>' +
         '<div style="font-size:13px;">' + items + '</div>' +
         '<div class="actions" style="gap:8px;">' +
@@ -1844,6 +1849,7 @@ function renderAll() {
     document.getElementById('set-earn').value = s.earn_per_rupee;
     document.getElementById('set-redeem').value = s.redeem_rupee_per_point;
     document.getElementById('set-min').value = s.min_redeem_points;
+    document.getElementById('set-tax').value = s.tax_percent;
     document.getElementById('set-url').value = s.site_base_url;
     document.getElementById('save-settings').addEventListener('click', async () => {
       try {
@@ -1851,6 +1857,7 @@ function renderAll() {
           earn_per_rupee: parseFloat(document.getElementById('set-earn').value),
           redeem_rupee_per_point: parseFloat(document.getElementById('set-redeem').value),
           min_redeem_points: parseInt(document.getElementById('set-min').value, 10),
+          tax_percent: parseFloat(document.getElementById('set-tax').value),
           site_base_url: document.getElementById('set-url').value.trim(),
         });
         document.getElementById('settings-msg').textContent = 'Saved.';

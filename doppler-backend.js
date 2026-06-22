@@ -14,6 +14,7 @@
     loadMenu: () => req('GET', 'menu.json'),
 
     // public
+    loadConfig: () => req('GET', '/api/config'),
     getSeat: (id) => req('GET', '/api/seat/' + encodeURIComponent(id)),
     placeOrder: (payload) => req('POST', '/api/order', payload),
     streamOrder: (id, onMsg) => {
