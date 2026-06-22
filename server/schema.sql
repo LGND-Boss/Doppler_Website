@@ -59,6 +59,12 @@ CREATE TABLE IF NOT EXISTS settings (
   site_base_url          text NOT NULL DEFAULT ''
 );
 
+CREATE TABLE IF NOT EXISTS site_content (
+  id   integer PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+  data jsonb NOT NULL DEFAULT '{}'::jsonb
+);
+INSERT INTO site_content (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS staff_users (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email         citext UNIQUE NOT NULL,

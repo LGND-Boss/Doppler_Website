@@ -844,13 +844,13 @@ function BrewSim() {
   return (
     <section className="section dark" id="brew" data-screen-label="03 Brew">
       <div className="row-tag">
-        <span className="label on-dark">§ 03 / brew · simulator</span>
+        <span className="label on-dark">{SITE('brew_label')}</span>
         <span className="label on-dark">interactive · 6 methods</span>
       </div>
 
       <h2 className="huge reveal" style={{ marginBottom: 24 }}>
-        Pour your<br/>
-        <span className="serif">own way.</span>
+        {SITE('brew_h1')}<br/>
+        <span className="serif">{SITE('brew_h2')}</span>
       </h2>
 
       {/* Method picker */}

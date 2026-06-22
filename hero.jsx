@@ -149,31 +149,30 @@ function Hero() {
       <div className="hero-grid">
         <div>
           <div className="label on-dark" style={{ marginBottom: 24 }}>
-            § 01 / hello · the second cup is always
+            {SITE('hero_label')}
           </div>
           <h1 className="mega">
-            <span className="ddev">डॉप्लर</span><br />
-            in <span className="serif">brick</span><br />
-            &amp; <span className="serif">light.</span>
+            <span className="ddev">{SITE('hero_dev')}</span><br />
+            {SITE('hero_line2')}<br />
+            <span className="serif">{SITE('hero_line3')}</span>
           </h1>
           <p className="large" style={{ maxWidth: 520, marginTop: 32, opacity: 0.88 }}>
-            A specialty roastery and cafe in the pink city — under a glass roof, behind
-            a brick wall, beside a moringa tree.
+            {SITE('hero_intro')}
           </p>
 
           <div style={{ display: 'flex', gap: 16, marginTop: 40, flexWrap: 'wrap' }}>
             <MagneticBtn className="ember" onClick={() => document.getElementById('reserve').scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-              Reserve a table <span className="arrow">→</span>
+              {SITE('hero_btn_reserve')} <span className="arrow">→</span>
             </MagneticBtn>
             <MagneticBtn className="outline" onClick={() => document.getElementById('tour').scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-              Tour the rooms <span className="arrow">→</span>
+              {SITE('hero_btn_tour')} <span className="arrow">→</span>
             </MagneticBtn>
           </div>
 
           <div className="hero-meta">
-            <div className="cell"><span className="k">Open</span><span className="v">06:00 — 22:30</span></div>
-            <div className="cell"><span className="k">Origins</span><span className="v">Chikmagalur · Araku</span></div>
-            <div className="cell"><span className="k">Roast</span><span className="v">In-house · weekly</span></div>
+            <div className="cell"><span className="k">Open</span><span className="v">{SITE('hero_meta_open')}</span></div>
+            <div className="cell"><span className="k">Origins</span><span className="v">{SITE('hero_meta_origins')}</span></div>
+            <div className="cell"><span className="k">Roast</span><span className="v">{SITE('hero_meta_roast')}</span></div>
             <div className="cell"><span className="k">Index</span><span className="v">№ 001 / 005</span></div>
           </div>
         </div>

@@ -85,24 +85,22 @@ function Footer() {
             <span>डॉप्लर · Doppler</span>
           </div>
           <p style={{ maxWidth: 340, opacity: 0.75, fontSize: 14, lineHeight: 1.5 }}>
-            A specialty roastery in Jaipur, behind a brick wall and under a glass roof.
-            Slow water, single origin, the second cup is always.
+            {SITE('footer_blurb')}
           </p>
         </div>
         <div>
           <h4>Visit</h4>
           <ul>
-            <li>C-Scheme</li>
-            <li>Jaipur 302001</li>
-            <li>06:00 — 22:30</li>
+            <li>{SITE('contact_address')}</li>
+            <li>{SITE('contact_hours')}</li>
           </ul>
         </div>
         <div>
           <h4>Reach</h4>
           <ul>
-            <li><a href="#">hello@doppler.coffee</a></li>
-            <li><a href="#">+91 14 1 234 0001</a></li>
-            <li><a href="#">@doppler.jaipur</a></li>
+            <li><a href="#">{SITE('contact_email')}</a></li>
+            <li><a href="#">{SITE('contact_phone')}</a></li>
+            <li><a href="#">{SITE('contact_instagram')}</a></li>
           </ul>
         </div>
         <div>
@@ -115,8 +113,8 @@ function Footer() {
         </div>
       </div>
       <div className="footer-bot">
-        <span>© 2026 Doppler Coffee · 26.9130N · 75.8060E</span>
-        <span>Designed in concrete</span>
+        <span>{SITE('footer_copyright')}</span>
+        <span>{SITE('footer_tagline')}</span>
       </div>
     </footer>
   );
@@ -209,4 +207,7 @@ function DopplerTweaks() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+// Re-renderable root so published content (loaded async) can refresh the page.
+const __dopplerRoot = ReactDOM.createRoot(document.getElementById('root'));
+window.__render = () => __dopplerRoot.render(<App />);
+window.__render();

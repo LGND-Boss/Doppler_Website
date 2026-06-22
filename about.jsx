@@ -3,7 +3,7 @@ function About() {
   return (
     <section className="section" id="about" data-screen-label="02 About">
       <div className="row-tag">
-        <span className="label">§ 02 / about · the room</span>
+        <span className="label">{SITE('about_label')}</span>
         <span className="label">idx 0002</span>
       </div>
 
@@ -11,51 +11,41 @@ function About() {
         <div >
           <div className="photo-frame" style={{ backgroundImage: `url('${(window.__resources && window.__resources.courtyard) || 'img/courtyard.png'}')` }}></div>
           <div className="photo-meta">
-            <span>Courtyard · afternoon</span>
-            <span>35mm · ƒ/2.8</span>
+            <span>{SITE('about_photo_caption')}</span>
+            <span>{SITE('about_photo_meta')}</span>
           </div>
         </div>
 
         <div>
           <h2 className="huge">
-            A brick wall,<br/>
-            <span className="serif">a glass roof,</span><br/>
-            a slow morning.
+            {SITE('about_h1')}<br/>
+            <span className="serif">{SITE('about_h2')}</span><br/>
+            {SITE('about_h3')}
           </h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: '32px 1fr', gap: 24, marginTop: 56 }}>
             <span className="about-num">01</span>
-            <p className="large" style={{ maxWidth: 540 }}>
-              The wall is hand-laid brick — local, kiln-fired, set with a thumb-thick mortar joint.
-              At dusk, lights buried in the lawn throw long warm bars across the path to the door.
-            </p>
+            <p className="large" style={{ maxWidth: 540 }}>{SITE('about_p1')}</p>
 
             <span className="about-num">02</span>
-            <p className="large" style={{ maxWidth: 540 }}>
-              Inside: lime-plaster walls, oak floor, a glass-and-timber roof above the espresso bar.
-              Onion-shaped silk lanterns hang over the slow bar. The moringa stays out front.
-            </p>
+            <p className="large" style={{ maxWidth: 540 }}>{SITE('about_p2')}</p>
 
             <span className="about-num">03</span>
-            <p className="large" style={{ maxWidth: 540 }}>
-              Beans travel from estates in Chikmagalur and the Araku Valley, roasted in small batches
-              on-site. <span className="devanagari">डॉप्लर</span> — a name for the shift you hear when
-              something moves toward you. We hope yours does, too.
-            </p>
+            <p className="large" style={{ maxWidth: 540 }}>{SITE('about_p3')}</p>
           </div>
 
           <div className="specs">
             <div className="spec">
-              <div className="n">06:00</div>
-              <div className="l">Daily open</div>
+              <div className="n">{SITE('about_spec1_n')}</div>
+              <div className="l">{SITE('about_spec1_l')}</div>
             </div>
             <div className="spec">
-              <div className="n">14</div>
-              <div className="l">Single-origins on bar</div>
+              <div className="n">{SITE('about_spec2_n')}</div>
+              <div className="l">{SITE('about_spec2_l')}</div>
             </div>
             <div className="spec">
-              <div className="n">2.4k</div>
-              <div className="l">Cups poured / week</div>
+              <div className="n">{SITE('about_spec3_n')}</div>
+              <div className="l">{SITE('about_spec3_l')}</div>
             </div>
           </div>
         </div>

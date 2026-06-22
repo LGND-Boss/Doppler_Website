@@ -104,13 +104,13 @@ function SpaceTour() {
   return (
     <section className="section dark" id="tour" data-screen-label="04 Tour">
       <div className="row-tag">
-        <span className="label on-dark">§ 04 / tour · the floor plan</span>
+        <span className="label on-dark">{SITE('tour_label')}</span>
         <span className="label on-dark">tap a room · 6 areas</span>
       </div>
 
       <h2 className="huge reveal" style={{ marginBottom: 32 }}>
-        Walk the plan,<br/>
-        <span className="serif">find the corner.</span>
+        {SITE('tour_h1')}<br/>
+        <span className="serif">{SITE('tour_h2')}</span>
       </h2>
 
       <div className="plan-split">

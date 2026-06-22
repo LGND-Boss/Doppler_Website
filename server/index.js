@@ -4,6 +4,8 @@ const express = require('express');
 const auth = require('./auth');
 
 const app = express();
+// Image uploads (base64) need a larger body; everything else stays tight.
+app.use('/api/content/image', express.json({ limit: '12mb' }));
 app.use(express.json({ limit: '64kb' }));
 app.use(auth.sessionMiddleware);
 
@@ -19,6 +21,7 @@ app.use('/api/seats', require('./routes/seats'));
 app.use('/api/customers', require('./routes/customers'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/staff', require('./routes/staff'));
+app.use('/api/content', require('./routes/content'));
 
 // Static site (order.html, admin.html, index.html, assets) — same origin as API.
 // server/ lives inside the site repo, so the static root is the parent directory.

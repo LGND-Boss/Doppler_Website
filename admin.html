@@ -601,6 +601,7 @@
 
     <div class="tabs">
       <button class="tab active" data-tab="events">§ Events</button>
+      <button class="tab" data-tab="content">§ Site Content</button>
       <button class="tab" data-tab="photos">§ Photos</button>
       <button class="tab" data-tab="jobs">§ Jobs</button>
       <button class="tab" data-tab="careers">§ Careers Copy</button>
@@ -622,6 +623,20 @@
         </div>
       </div>
       <div id="ev-list" class="list"></div>
+    </div>
+
+    <!-- SITE CONTENT PANEL -->
+    <div class="panel" data-panel="content">
+      <div class="panel-head">
+        <h2>Site content</h2>
+        <div class="actions">
+          <a href="index.html" class="btn-a" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;">Preview site ↗</a>
+          <button class="btn-a primary" id="content-save">Publish changes</button>
+        </div>
+      </div>
+      <p class="help" style="margin-bottom: 16px;">Edit the public website copy and photos. Changes publish to every visitor when you click <strong>Publish</strong>.</p>
+      <div id="content-form"></div>
+      <p id="content-msg" class="help"></p>
     </div>
 
     <!-- PHOTOS PANEL -->
@@ -903,6 +918,7 @@
 
 <script src="doppler-data.js"></script>
 <script src="doppler-backend.js"></script>
+<script src="site-content.js"></script>
 <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js" crossorigin="anonymous"></script>
 <script>
 
@@ -1429,7 +1445,7 @@ function renderAll() {
 
   function bootStaff() {
     if (booted) return; booted = true;
-    initOrders(); initSeats(); initCustomers(); initSettings(); initUsers();
+    initOrders(); initSeats(); initCustomers(); initSettings(); initUsers(); initContent();
   }
   window.bootStaff = bootStaff;
 
@@ -1644,6 +1660,63 @@ function renderAll() {
           if (confirm('Delete this staff account?')) { await API.deleteStaff(del.dataset.del); renderStaff(); toast('Deleted.'); }
         }
       } catch (err) { alert(err.message); }
+    });
+  }
+
+  // ---- Site content (public copy + photos) ----
+  function fieldInput(f, val) {
+    const id = 'c-' + f.key;
+    const v = escapeHtml(val);
+    if (f.type === 'image') {
+      return '<div class="field"><label>' + escapeHtml(f.label) + '</label>' +
+        '<img id="prev-' + f.key + '" src="' + v + '" alt="" style="max-width:180px;max-height:120px;border:1px solid rgba(0,0,0,.15);border-radius:6px;display:block;margin:4px 0;" onerror="this.style.display=\'none\'"/>' +
+        '<input type="hidden" id="' + id + '" value="' + v + '"/>' +
+        '<input type="file" accept="image/*" data-imgkey="' + f.key + '"/>' +
+        '<span class="help" id="up-' + f.key + '"></span></div>';
+    }
+    if (f.type === 'area') {
+      return '<div class="field"><label>' + escapeHtml(f.label) + '</label><textarea id="' + id + '" style="min-height:72px;">' + v + '</textarea></div>';
+    }
+    return '<div class="field"><label>' + escapeHtml(f.label) + '</label><input type="text" id="' + id + '" value="' + v + '"/></div>';
+  }
+  async function initContent() {
+    const C = window.DopplerContent || { SCHEMA: [], DEFAULTS: {} };
+    let overrides = {};
+    try { overrides = await API.getContent(); } catch (e) {}
+    const merged = Object.assign({}, C.DEFAULTS, overrides);
+    const host = document.getElementById('content-form');
+    host.innerHTML = C.SCHEMA.map((grp) =>
+      '<div class="m-section"><div class="m-section-head">§ ' + escapeHtml(grp.group) + '</div>' +
+      grp.fields.map((f) => fieldInput(f, merged[f.key] != null ? merged[f.key] : '')).join('') +
+      '</div>').join('');
+
+    host.addEventListener('change', (e) => {
+      const fi = e.target.closest('input[type=file][data-imgkey]');
+      if (!fi || !fi.files[0]) return;
+      const key = fi.dataset.imgkey;
+      const note = document.getElementById('up-' + key);
+      note.textContent = 'Uploading…';
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const r = await API.uploadImage(key, reader.result);
+          document.getElementById('c-' + key).value = r.url;
+          const prev = document.getElementById('prev-' + key);
+          prev.src = r.url; prev.style.display = 'block';
+          note.textContent = 'Uploaded ✓ — Publish to apply';
+        } catch (err) { note.textContent = err.message; }
+      };
+      reader.readAsDataURL(fi.files[0]);
+    });
+
+    document.getElementById('content-save').addEventListener('click', async () => {
+      const out = {};
+      C.SCHEMA.forEach((grp) => grp.fields.forEach((f) => {
+        const el = document.getElementById('c-' + f.key);
+        if (el) out[f.key] = el.value;
+      }));
+      try { await API.putContent(out); document.getElementById('content-msg').textContent = 'Published.'; toast('Site content published.'); }
+      catch (e) { document.getElementById('content-msg').textContent = e.message; }
     });
   }
 })();

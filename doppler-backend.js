@@ -62,6 +62,11 @@
     getSettings: () => req('GET', '/api/settings'),
     putSettings: (patch) => req('PUT', '/api/settings', patch),
 
+    // site content (public read; admin write)
+    getContent: () => req('GET', '/api/content'),
+    putContent: (data) => req('PUT', '/api/content', data),
+    uploadImage: (key, dataUrl) => req('POST', '/api/content/image', { key, dataUrl }),
+
     // admin: staff accounts
     listStaff: () => req('GET', '/api/staff'),
     createStaff: (email, password, role) => req('POST', '/api/staff', { email, password, role }),

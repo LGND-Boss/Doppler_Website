@@ -64,28 +64,28 @@ function Reservations() {
   return (
     <section className="section" id="reserve" data-screen-label="05 Reserve">
       <div className="row-tag">
-        <span className="label">§ 05 / reserve · events &amp; tables</span>
+        <span className="label">{SITE('reserve_label')}</span>
         <span className="label">handled by hop ↗</span>
       </div>
 
       <div className="reserve-grid">
         <div>
           <h2 className="huge reveal">
-            What's on,<br/>
-            <span className="serif">when to come.</span>
+            {SITE('reserve_h1')}<br/>
+            <span className="serif">{SITE('reserve_h2')}</span>
           </h2>
           <p className="large reveal" style={{ maxWidth: 460, marginTop: 32, opacity: 0.8 }}>
-            Cuppings, listening nights, Sunday cinema, the occasional pop-up. Tables and tickets are held through Hop — tap a date for the brief, then head over to book.
+            {SITE('reserve_intro')}
           </p>
 
           <div style={{ marginTop: 48, display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 460 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--rule)', paddingBottom: 12 }}>
               <span className="label">Address</span>
-              <span style={{ fontSize: 16 }}>C-Scheme · Jaipur 302001</span>
+              <span style={{ fontSize: 16 }}>{SITE('contact_address')}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--rule)', paddingBottom: 12 }}>
               <span className="label">Hours</span>
-              <span style={{ fontSize: 16 }}>06:00 — 22:30 daily</span>
+              <span style={{ fontSize: 16 }}>{SITE('contact_hours')}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--rule)', paddingBottom: 12 }}>
               <span className="label">Reservations</span>
@@ -93,7 +93,7 @@ function Reservations() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span className="label">Tel</span>
-              <span style={{ fontSize: 16 }}>+91 14 1 234 0001</span>
+              <span style={{ fontSize: 16 }}>{SITE('contact_phone')}</span>
             </div>
           </div>
 
