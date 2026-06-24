@@ -39,6 +39,38 @@
     tour_h1: 'Walk the plan,',
     tour_h2: 'find the corner.',
 
+    // Tour · per-area panel text (shown when a room is selected).
+    // detail fields are one bullet per line.
+    'tour_approach_name': 'The Approach',
+    'tour_approach_tag': 'FACADE · DUSK · MAY',
+    'tour_approach_desc': 'A 28-foot brick-paved walk between moringa and frangipani. Lights buried in the lawn flicker on at 18:30 — the first thing every guest sees.',
+    'tour_approach_detail': 'Hand-laid brick\nMoringa · frangipani\n60 m to door',
+
+    'tour_matcha-bar_name': 'Matcha Bar',
+    'tour_matcha-bar_tag': 'MATCHA · UJI · 75°C',
+    'tour_matcha-bar_desc': 'A small jade-tiled counter for ceremonial and culinary matcha. Uji powder, sifted; chasen whisked into peaks. Three seats only — bring patience.',
+    'tour_matcha-bar_detail': 'Sift · bloom · whisk\n3 seats\nOpen from 09:00',
+
+    'tour_community-table_name': 'Community Table',
+    'tour_community-table_tag': 'COMMUNITY TABLE · 16 PAX',
+    'tour_community-table_desc': 'A 13-foot reclaimed teak table beneath the glass roof. Eight stools either side — strangers become regulars; regulars become friends.',
+    'tour_community-table_detail': 'Reclaimed teak\n16 seats\nGlass-roof daylight',
+
+    'tour_coffee-bar_name': 'Coffee Bar',
+    'tour_coffee-bar_tag': 'COFFEE BAR · CENTRE · 9.5′ × 7.5′',
+    'tour_coffee-bar_desc': 'The curved island. Two grinders, one La Marzocco, a Hario Switch station. Everything within arm’s reach — the bar choreographed for a single barista to dance.',
+    'tour_coffee-bar_detail': 'La Marzocco Linea PB\nMahlkönig EK43 · E80\nV60 · Switch · siphon',
+
+    'tour_floor-hall_name': 'Floor Hall',
+    'tour_floor-hall_tag': 'FLOOR HALL · LANTERNS · NIGHT',
+    'tour_floor-hall_desc': 'Around the bar, the room opens up. Two-tops on the wings, four-tops down the middle, a velvet booth at the back for quiet conversations.',
+    'tour_floor-hall_detail': '60 seats\n14 tables\n6 columns',
+
+    'tour_projector-lounge_name': 'Projector Lounge',
+    'tour_projector-lounge_tag': 'LOUNGE · PROJECTOR · SUN 16:00',
+    'tour_projector-lounge_desc': 'A small sunken plaster room with a single projector. Sunday afternoons it plays Studio Ghibli; weekday nights, b-side films from the neighbourhood.',
+    'tour_projector-lounge_detail': 'Projection wall · 13′-9″\n16 seats · bench\nBYO film, Wednesdays',
+
     // Reserve
     reserve_label: '§ 05 / reserve · events & tables',
     reserve_h1: "What's on,",
@@ -62,6 +94,14 @@
     img_espresso: 'img/espresso.png',
     img_slowbar: 'img/slowbar.png',
     img_lounge: 'img/lounge.png',
+
+    // Tour rooms that previously reused the hero/about photos — now independent.
+    img_tour_approach: 'img/facade.png',
+    img_tour_matcha: 'img/courtyard.png',
+
+    // Logos (CSS backgrounds; upload PNGs with transparent backgrounds)
+    img_logo: 'img/logo.png',
+    img_logo_knockout: 'img/logo-knockout-trim.png',
   };
 
   // --- Admin editor schema (groups + fields). type: text | area | image ---
@@ -102,6 +142,42 @@
       { key: 'tour_h1', label: 'Heading · line 1' },
       { key: 'tour_h2', label: 'Heading · line 2 (serif)' },
     ]},
+    { group: 'Tour · The Approach', fields: [
+      { key: 'tour_approach_name', label: 'Area title' },
+      { key: 'tour_approach_tag', label: 'Photo tag' },
+      { key: 'tour_approach_desc', label: 'Description', type: 'area' },
+      { key: 'tour_approach_detail', label: 'Detail bullets (one per line)', type: 'area' },
+    ]},
+    { group: 'Tour · Matcha Bar', fields: [
+      { key: 'tour_matcha-bar_name', label: 'Area title' },
+      { key: 'tour_matcha-bar_tag', label: 'Photo tag' },
+      { key: 'tour_matcha-bar_desc', label: 'Description', type: 'area' },
+      { key: 'tour_matcha-bar_detail', label: 'Detail bullets (one per line)', type: 'area' },
+    ]},
+    { group: 'Tour · Community Table', fields: [
+      { key: 'tour_community-table_name', label: 'Area title' },
+      { key: 'tour_community-table_tag', label: 'Photo tag' },
+      { key: 'tour_community-table_desc', label: 'Description', type: 'area' },
+      { key: 'tour_community-table_detail', label: 'Detail bullets (one per line)', type: 'area' },
+    ]},
+    { group: 'Tour · Coffee Bar', fields: [
+      { key: 'tour_coffee-bar_name', label: 'Area title' },
+      { key: 'tour_coffee-bar_tag', label: 'Photo tag' },
+      { key: 'tour_coffee-bar_desc', label: 'Description', type: 'area' },
+      { key: 'tour_coffee-bar_detail', label: 'Detail bullets (one per line)', type: 'area' },
+    ]},
+    { group: 'Tour · Floor Hall', fields: [
+      { key: 'tour_floor-hall_name', label: 'Area title' },
+      { key: 'tour_floor-hall_tag', label: 'Photo tag' },
+      { key: 'tour_floor-hall_desc', label: 'Description', type: 'area' },
+      { key: 'tour_floor-hall_detail', label: 'Detail bullets (one per line)', type: 'area' },
+    ]},
+    { group: 'Tour · Projector Lounge', fields: [
+      { key: 'tour_projector-lounge_name', label: 'Area title' },
+      { key: 'tour_projector-lounge_tag', label: 'Photo tag' },
+      { key: 'tour_projector-lounge_desc', label: 'Description', type: 'area' },
+      { key: 'tour_projector-lounge_detail', label: 'Detail bullets (one per line)', type: 'area' },
+    ]},
     { group: 'Reserve', fields: [
       { key: 'reserve_label', label: 'Eyebrow label' },
       { key: 'reserve_h1', label: 'Heading · line 1' },
@@ -119,12 +195,18 @@
       { key: 'footer_tagline', label: 'Footer tagline' },
     ]},
     { group: 'Photos', fields: [
-      { key: 'img_facade', label: 'Hero · facade', type: 'image' },
-      { key: 'img_courtyard', label: 'About · courtyard', type: 'image' },
-      { key: 'img_atrium', label: 'Tour · community table', type: 'image' },
-      { key: 'img_espresso', label: 'Tour · coffee bar', type: 'image' },
-      { key: 'img_slowbar', label: 'Tour · floor hall', type: 'image' },
-      { key: 'img_lounge', label: 'Tour · lounge', type: 'image' },
+      { key: 'img_facade', label: 'Hero · facade — 1600×1100px landscape (JPG)', type: 'image' },
+      { key: 'img_courtyard', label: 'About · courtyard — 1200×1600px portrait 3:4 (JPG)', type: 'image' },
+      { key: 'img_tour_approach', label: 'Tour · the approach — 1280×1600px portrait 4:5 (JPG)', type: 'image' },
+      { key: 'img_tour_matcha', label: 'Tour · matcha bar — 1280×1600px portrait 4:5 (JPG)', type: 'image' },
+      { key: 'img_atrium', label: 'Tour · community table — 1280×1600px portrait 4:5 (JPG)', type: 'image' },
+      { key: 'img_espresso', label: 'Tour · coffee bar — 1280×1600px portrait 4:5 (JPG)', type: 'image' },
+      { key: 'img_slowbar', label: 'Tour · floor hall — 1280×1600px portrait 4:5 (JPG)', type: 'image' },
+      { key: 'img_lounge', label: 'Tour · lounge — 1280×1600px portrait 4:5 (JPG)', type: 'image' },
+    ]},
+    { group: 'Logos', fields: [
+      { key: 'img_logo', label: 'Logo · mark (nav, hero card, loader, footer) — 512×512px square, PNG transparent', type: 'image' },
+      { key: 'img_logo_knockout', label: 'Hero wordmark (large logo) — 600×625px, PNG transparent', type: 'image' },
     ]},
   ];
 
@@ -142,7 +224,12 @@
     window.__resources = r;
     let tag = document.getElementById('__site_img_overrides');
     if (!tag) { tag = document.createElement('style'); tag.id = '__site_img_overrides'; (document.head || document.documentElement).appendChild(tag); }
-    tag.textContent = `.hero .facade { background-image: url('${eff.img_facade}') !important; }`;
+    // Hero facade + logos are CSS background-images; override just the image,
+    // leaving each rule's own sizing/position intact.
+    tag.textContent =
+      `.hero .facade { background-image: url('${eff.img_facade}') !important; }\n` +
+      `.brand-mark, .hero-card .logo-mark, .loader .logo-mark { background-image: url('${eff.img_logo}') !important; }\n` +
+      `.bsb-logo { background-image: url('${eff.img_logo_knockout}') !important; }`;
   }
 
   // Synchronous default so first render has content.

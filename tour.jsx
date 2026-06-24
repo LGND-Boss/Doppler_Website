@@ -62,11 +62,47 @@ const ROOMS = [
   },
 ];
 
+// Each room's photo maps to an editable image key (admin → § Photos / § Site
+// Content). The approach + matcha bar get their own keys so they no longer
+// share the hero/about photos; the other four already had dedicated images.
+const ROOM_PHOTO_KEY = {
+  'approach':         'img_tour_approach',
+  'matcha-bar':       'img_tour_matcha',
+  'community-table':  'img_atrium',
+  'coffee-bar':       'img_espresso',
+  'floor-hall':       'img_slowbar',
+  'projector-lounge': 'img_lounge',
+};
+
+// Overlay editable copy (published via admin → § Site Content) on top of the
+// hardcoded room defaults. Keys: tour_<id>_name / _tag / _desc / _detail.
+function resolveRoom(r) {
+  const k = 'tour_' + r.id + '_';
+  const pick = (suffix, fallback) => {
+    const v = typeof SITE === 'function' ? SITE(k + suffix) : '';
+    return v ? v : fallback;
+  };
+  const detailRaw = typeof SITE === 'function' ? SITE(k + 'detail') : '';
+  const detail = detailRaw
+    ? detailRaw.split('\n').map(s => s.trim()).filter(Boolean)
+    : r.detail;
+  const photoKey = ROOM_PHOTO_KEY[r.id];
+  const photo = (photoKey && typeof SITE === 'function' && SITE(photoKey)) || r.photo;
+  return Object.assign({}, r, {
+    name: pick('name', r.name),
+    photoTag: pick('tag', r.photoTag),
+    desc: pick('desc', r.desc),
+    detail,
+    photo,
+  });
+}
+
 function SpaceTour() {
   const [activeId, setActiveId] = React.useState('coffee-bar');
   const [hoverId, setHoverId] = React.useState(null);
 
-  const active = ROOMS.find(r => r.id === activeId);
+  const rooms = ROOMS.map(resolveRoom);
+  const active = rooms.find(r => r.id === activeId);
 
   const select = (id) => {
     if (window.AudioCtx) window.AudioCtx.click();
@@ -474,7 +510,7 @@ function SpaceTour() {
               </g>
 
               {/* ============ INTERACTIVE REGIONS ============ */}
-              {ROOMS.map(r => {
+              {rooms.map(r => {
                 const d = REGION_PATHS[r.id];
                 const lbl = REGION_LABELS[r.id];
                 const isActive = r.id === activeId;
@@ -525,7 +561,7 @@ function SpaceTour() {
 
           {/* room list under the plan */}
           <div className="plan-roomlist">
-            {ROOMS.map(r => (
+            {rooms.map(r => (
               <button
                 key={r.id}
                 className={"plan-room" + (r.id === activeId ? " active" : "")}

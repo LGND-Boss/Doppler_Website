@@ -116,12 +116,16 @@
 
   // --- Editable photos. key is also the short alias consumed by window.__resources. ---
   const IMAGE_SLOTS = [
-    { key: 'facade',    label: 'Hero · facade',         path: 'img/facade.png',    where: 'Top of homepage · hero background' },
-    { key: 'courtyard', label: 'About · courtyard',     path: 'img/courtyard.png', where: 'About section photo · also tour matcha bar' },
-    { key: 'atrium',    label: 'Tour · community table',path: 'img/atrium.png',    where: 'Floorplan tour · community table' },
-    { key: 'espresso',  label: 'Tour · coffee bar',     path: 'img/espresso.png',  where: 'Floorplan tour · espresso bar' },
-    { key: 'slowbar',   label: 'Tour · floor hall',     path: 'img/slowbar.png',   where: 'Floorplan tour · floor hall' },
-    { key: 'lounge',    label: 'Tour · lounge',         path: 'img/lounge.png',    where: 'Floorplan tour · lounge' },
+    { key: 'facade',        label: 'Hero · facade',          path: 'img/facade.png',             where: 'Top of homepage · hero background · rec 1600×1100px landscape' },
+    { key: 'courtyard',     label: 'About · courtyard',      path: 'img/courtyard.png',          where: 'About section photo · rec 1200×1600px portrait (3:4)' },
+    { key: 'tour_approach', label: 'Tour · the approach',    path: 'img/facade.png',             where: 'Floorplan tour · the approach · rec 1280×1600px portrait (4:5)' },
+    { key: 'tour_matcha',   label: 'Tour · matcha bar',      path: 'img/courtyard.png',          where: 'Floorplan tour · matcha bar · rec 1280×1600px portrait (4:5)' },
+    { key: 'atrium',        label: 'Tour · community table', path: 'img/atrium.png',             where: 'Floorplan tour · community table · rec 1280×1600px portrait (4:5)' },
+    { key: 'espresso',      label: 'Tour · coffee bar',      path: 'img/espresso.png',           where: 'Floorplan tour · coffee bar · rec 1280×1600px portrait (4:5)' },
+    { key: 'slowbar',       label: 'Tour · floor hall',      path: 'img/slowbar.png',            where: 'Floorplan tour · floor hall · rec 1280×1600px portrait (4:5)' },
+    { key: 'lounge',        label: 'Tour · lounge',          path: 'img/lounge.png',             where: 'Floorplan tour · lounge · rec 1280×1600px portrait (4:5)' },
+    { key: 'logo',          label: 'Logo · mark',            path: 'img/logo.png',               where: 'Nav, hero card, loader, footer · rec 512×512px PNG transparent' },
+    { key: 'logo_knockout', label: 'Hero wordmark',          path: 'img/logo-knockout-trim.png', where: 'Large logo in hero · rec 600×625px PNG transparent' },
   ];
 
   const MENU_DEFAULTS = {

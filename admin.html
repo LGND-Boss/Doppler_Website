@@ -649,7 +649,7 @@
         </div>
       </div>
       <p class="img-note">
-        Drop a photo on a slot — or click it — to swap the image. Files are downscaled to <strong>1600px</strong> on the long edge and saved as <strong>JPEG ~82%</strong>, so the page stays light. Originals never leave your browser.
+        Drop a photo on a slot — or click it — to swap the image. Files are downscaled to <strong>1600px</strong> on the long edge; photos save as <strong>JPEG ~82%</strong> while <strong>PNG logos keep their transparency</strong>. Everything publishes straight to the café server — reload the home page to see it live for every visitor.
       </p>
       <div id="img-grid" class="img-grid"></div>
     </div>
@@ -989,6 +989,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.add('active');
     document.querySelector(`.panel[data-panel="${tab.dataset.tab}"]`).classList.add('active');
     if (tab.dataset.tab === 'settings') refreshExport();
+    if (tab.dataset.tab === 'photos') { photoDoc = null; photoLoading = null; renderPhotos(); renderQuota(); }
   });
 });
 
@@ -1285,91 +1286,121 @@ function approxDataURLBytes(s) {
   return Math.floor(b64.length * 0.75) - pad;
 }
 
+// Photos are stored on the café server inside the shared site-content document
+// (one key per slot: img_<slot>). We keep a cache of the whole document so a
+// photo save never wipes the text fields published from the § Site Content tab.
+const PHOTO_API = window.DopplerAPI;
+let photoDoc = null;       // full content document {key: value}
+let photoLoading = null;   // in-flight load promise
+
+function photoDefaults() { return (window.DopplerContent && window.DopplerContent.DEFAULTS) || {}; }
+function contentKey(slotKey) { return 'img_' + slotKey; }
+
+async function loadPhotoDoc(force) {
+  if (photoDoc && !force) return photoDoc;
+  if (photoLoading && !force) return photoLoading;
+  photoLoading = (async () => {
+    let overrides = {};
+    try { overrides = await PHOTO_API.getContent(); } catch (e) {}
+    if (!overrides || typeof overrides !== 'object') overrides = {};
+    photoDoc = Object.assign({}, photoDefaults(), overrides);
+    return photoDoc;
+  })();
+  try { return await photoLoading; } finally { photoLoading = null; }
+}
+
+async function savePhotoDoc() {
+  // PUT /api/content replaces the whole document, so send the full merged doc.
+  const saved = await PHOTO_API.putContent(photoDoc);
+  if (saved && typeof saved === 'object') photoDoc = Object.assign({}, photoDefaults(), saved);
+  return photoDoc;
+}
+
 function renderQuota() {
-  const stored = window.DopplerData.getImages();
-  const total = Object.values(stored).reduce((a, v) => a + approxDataURLBytes(v), 0);
   const el = document.getElementById('img-quota');
   if (!el) return;
-  el.textContent = 'Storage · ' + fmtBytes(total) + ' / ~5 MB';
+  el.textContent = 'Saved to the café server · live for every visitor';
   el.classList.remove('warn', 'full');
-  if (total > 4.2 * 1024 * 1024) el.classList.add('full');
-  else if (total > 3 * 1024 * 1024) el.classList.add('warn');
 }
 
 function renderPhotos() {
   const grid = document.getElementById('img-grid');
   if (!grid) return;
-  grid.innerHTML = '';
-  const slots  = window.DopplerData.IMAGE_SLOTS;
-  const stored = window.DopplerData.getImages();
+  loadPhotoDoc().then((doc) => {
+    grid.innerHTML = '';
+    const slots = window.DopplerData.IMAGE_SLOTS;
 
-  slots.forEach(slot => {
-    const has = !!stored[slot.key];
-    const src = stored[slot.key] || slot.path;
-    const size = has ? approxDataURLBytes(stored[slot.key]) : null;
+    slots.forEach(slot => {
+      const cur = doc[contentKey(slot.key)] || slot.path;
+      const isCustom = cur !== slot.path;
+      const src = cur;
 
-    const card = document.createElement('div');
-    card.className = 'img-slot';
-    card.dataset.key = slot.key;
-    card.innerHTML = `
-      <div class="img-thumb" role="button" tabindex="0" aria-label="Replace photo">
-        <img alt="" src="${escapeHtml(src)}"/>
-        <span class="img-badge ${has ? '' : 'default'}">${has ? '§ Custom' : '§ Default'}</span>
-        <span class="img-drophint">Drop or click to replace</span>
-      </div>
-      <div class="img-body">
-        <div class="img-title">${escapeHtml(slot.label)}</div>
-        <div class="img-where">${escapeHtml(slot.where)}</div>
-        <div class="img-meta">${has ? fmtBytes(size) + ' · stored' : 'Bundled file · ' + escapeHtml(slot.path)}</div>
-      </div>
-      <div class="img-actions">
-        <button data-act="upload">Replace…</button>
-        <button class="danger" data-act="reset" ${has ? '' : 'disabled'} title="Revert to bundled image">Reset</button>
-      </div>`;
+      const card = document.createElement('div');
+      card.className = 'img-slot';
+      card.dataset.key = slot.key;
+      card.innerHTML = `
+        <div class="img-thumb" role="button" tabindex="0" aria-label="Replace photo">
+          <img alt="" src="${escapeHtml(src)}"/>
+          <span class="img-badge ${isCustom ? '' : 'default'}">${isCustom ? '§ Custom' : '§ Default'}</span>
+          <span class="img-drophint">Drop or click to replace</span>
+        </div>
+        <div class="img-body">
+          <div class="img-title">${escapeHtml(slot.label)}</div>
+          <div class="img-where">${escapeHtml(slot.where)}</div>
+          <div class="img-meta">${isCustom ? 'Custom · published' : 'Bundled file · ' + escapeHtml(slot.path)}</div>
+        </div>
+        <div class="img-actions">
+          <button data-act="upload">Replace…</button>
+          <button class="danger" data-act="reset" ${isCustom ? '' : 'disabled'} title="Revert to bundled image">Reset</button>
+        </div>`;
 
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.style.display = 'none';
-    card.appendChild(fileInput);
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.style.display = 'none';
+      card.appendChild(fileInput);
 
-    const onPick = () => fileInput.click();
-    card.querySelector('.img-thumb').addEventListener('click', onPick);
-    card.querySelector('.img-thumb').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPick(); }
+      const onPick = () => fileInput.click();
+      card.querySelector('.img-thumb').addEventListener('click', onPick);
+      card.querySelector('.img-thumb').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPick(); }
+      });
+      card.querySelector('[data-act="upload"]').addEventListener('click', onPick);
+      card.querySelector('[data-act="reset"]').addEventListener('click', async () => {
+        if (!confirm('Reset "' + slot.label + '" to the bundled image?')) return;
+        photoDoc[contentKey(slot.key)] = slot.path;
+        try { await savePhotoDoc(); }
+        catch (e) { toast(e && e.message ? e.message : 'Reset failed.'); return; }
+        try { window.DopplerData.clearImage(slot.key); } catch (e) {}
+        renderPhotos(); renderQuota(); toast('Photo reset.');
+      });
+
+      fileInput.addEventListener('change', () => {
+        const f = fileInput.files && fileInput.files[0];
+        if (f) ingestFile(slot, f, card);
+        fileInput.value = '';
+      });
+
+      // drag-and-drop
+      const thumb = card.querySelector('.img-thumb');
+      ['dragenter', 'dragover'].forEach(ev => thumb.addEventListener(ev, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        card.classList.add('drag-over');
+      }));
+      ['dragleave', 'dragend'].forEach(ev => thumb.addEventListener(ev, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        card.classList.remove('drag-over');
+      }));
+      thumb.addEventListener('drop', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        card.classList.remove('drag-over');
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (f) ingestFile(slot, f, card);
+      });
+
+      grid.appendChild(card);
     });
-    card.querySelector('[data-act="upload"]').addEventListener('click', onPick);
-    card.querySelector('[data-act="reset"]').addEventListener('click', () => {
-      if (!confirm('Reset "' + slot.label + '" to the bundled image?')) return;
-      window.DopplerData.clearImage(slot.key);
-      renderPhotos(); renderQuota(); toast('Photo reset.');
-    });
-
-    fileInput.addEventListener('change', () => {
-      const f = fileInput.files && fileInput.files[0];
-      if (f) ingestFile(slot, f, card);
-      fileInput.value = '';
-    });
-
-    // drag-and-drop
-    const thumb = card.querySelector('.img-thumb');
-    ['dragenter', 'dragover'].forEach(ev => thumb.addEventListener(ev, (e) => {
-      e.preventDefault(); e.stopPropagation();
-      card.classList.add('drag-over');
-    }));
-    ['dragleave', 'dragend'].forEach(ev => thumb.addEventListener(ev, (e) => {
-      e.preventDefault(); e.stopPropagation();
-      card.classList.remove('drag-over');
-    }));
-    thumb.addEventListener('drop', (e) => {
-      e.preventDefault(); e.stopPropagation();
-      card.classList.remove('drag-over');
-      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-      if (f) ingestFile(slot, f, card);
-    });
-
-    grid.appendChild(card);
-  });
+  }).catch((e) => { toast(e && e.message ? e.message : 'Could not load photos.'); });
 }
 
 function ingestFile(slot, file, card) {
@@ -1380,23 +1411,23 @@ function ingestFile(slot, file, card) {
   const reader = new FileReader();
   reader.onload = () => {
     const img = new Image();
-    img.onload = () => {
+    img.onload = async () => {
       try {
-        const dataURL = downscaleToDataURL(img);
-        const bytes = approxDataURLBytes(dataURL);
-        try {
-          window.DopplerData.setImage(slot.key, dataURL);
-        } catch (e) {
-          card.classList.remove('busy');
-          toast('Storage full. Reset a slot or use a smaller photo.');
-          return;
-        }
+        // Downscale in-browser to keep the page light, then upload to the server.
+        const dataURL = downscaleToDataURL(img, file.type);
+        const up = await PHOTO_API.uploadImage(slot.key, dataURL);
+        if (!up || !up.url) throw new Error('Upload failed.');
+        await loadPhotoDoc();              // ensure we have the full doc
+        photoDoc[contentKey(slot.key)] = up.url;
+        await savePhotoDoc();              // publish — replaces the whole content doc
+        // Drop any stale browser-only copy so it can't shadow the server image.
+        try { window.DopplerData.clearImage(slot.key); } catch (e) {}
         card.classList.remove('busy');
         renderPhotos(); renderQuota();
-        toast('Saved · ' + fmtBytes(bytes));
+        toast('Photo published ✓ — reload the home page to see it.');
       } catch (e) {
         card.classList.remove('busy');
-        toast('Could not process image.');
+        toast(e && e.message ? e.message : 'Could not save image.');
       }
     };
     img.onerror = () => { card.classList.remove('busy'); toast('Could not read image.'); };
@@ -1406,7 +1437,7 @@ function ingestFile(slot, file, card) {
   reader.readAsDataURL(file);
 }
 
-function downscaleToDataURL(img) {
+function downscaleToDataURL(img, mime) {
   const w0 = img.naturalWidth, h0 = img.naturalHeight;
   const longest = Math.max(w0, h0);
   const scale = longest > IMG_MAX_EDGE ? IMG_MAX_EDGE / longest : 1;
@@ -1415,15 +1446,26 @@ function downscaleToDataURL(img) {
   const canvas = document.createElement('canvas');
   canvas.width = w; canvas.height = h;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#1a1410';
-  ctx.fillRect(0, 0, w, h);
+  // PNG keeps its alpha (for logos); other formats flatten onto the dark bg as JPEG.
+  const isPng = mime === 'image/png';
+  if (!isPng) {
+    ctx.fillStyle = '#1a1410';
+    ctx.fillRect(0, 0, w, h);
+  }
   ctx.drawImage(img, 0, 0, w, h);
-  return canvas.toDataURL('image/jpeg', IMG_JPEG_QUALITY);
+  return isPng ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', IMG_JPEG_QUALITY);
 }
 
-document.getElementById('img-reset-all').addEventListener('click', () => {
+document.getElementById('img-reset-all').addEventListener('click', async () => {
   if (!confirm('Reset every photo to the bundled defaults?')) return;
-  window.DopplerData.clearAllImages();
+  const DEF = photoDefaults();
+  await loadPhotoDoc();
+  window.DopplerData.IMAGE_SLOTS.forEach(s => {
+    photoDoc[contentKey(s.key)] = DEF[contentKey(s.key)] || s.path;
+  });
+  try { await savePhotoDoc(); }
+  catch (e) { toast(e && e.message ? e.message : 'Reset failed.'); return; }
+  try { window.DopplerData.clearAllImages(); } catch (e) {}
   renderPhotos(); renderQuota(); toast('All photos reset.');
 });
 
