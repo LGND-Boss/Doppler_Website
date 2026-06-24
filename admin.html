@@ -603,8 +603,7 @@
       <button class="tab active" data-tab="events">§ Events</button>
       <button class="tab" data-tab="content">§ Site Content</button>
       <button class="tab" data-tab="photos">§ Photos</button>
-      <button class="tab" data-tab="jobs">§ Jobs</button>
-      <button class="tab" data-tab="careers">§ Careers Copy</button>
+      <button class="tab" data-tab="careers">§ Careers</button>
       <button class="tab" data-tab="settings">§ Settings</button>
       <button class="tab" data-tab="users">§ Staff &amp; Logins</button>
     </div>
@@ -650,39 +649,40 @@
       <div id="img-grid" class="img-grid"></div>
     </div>
 
-    <!-- JOBS PANEL -->
-    <div class="panel" data-panel="jobs">
+    <!-- CAREERS PANEL (job openings + page copy) -->
+    <div class="panel" data-panel="careers">
       <div class="panel-head">
-        <h2>Job openings</h2>
-        <div class="actions">
+        <h2>Careers</h2>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">§ Job openings</div>
+        <div class="actions" style="margin: 8px 0 12px;">
           <button class="btn-a" id="job-reset">Reset to defaults</button>
           <button class="btn-a primary" id="job-new">+ New role</button>
         </div>
+        <div id="job-list" class="list"></div>
       </div>
-      <div id="job-list" class="list"></div>
-    </div>
 
-    <!-- CAREERS COPY PANEL -->
-    <div class="panel" data-panel="careers">
-      <div class="panel-head">
-        <h2>Careers page copy</h2>
-        <div class="actions">
+      <div class="m-section" style="margin-top: 28px;">
+        <div class="m-section-head">§ Careers page copy</div>
+        <div class="actions" style="margin: 8px 0 12px;">
           <button class="btn-a" id="careers-reset">Reset to defaults</button>
           <button class="btn-a primary" id="careers-save">Save changes</button>
         </div>
-      </div>
-      <div class="field">
-        <label>Intro paragraph</label>
-        <textarea id="careers-intro"></textarea>
-      </div>
-      <div class="field">
-        <label>Contact email</label>
-        <input type="email" id="careers-contact"/>
-      </div>
-      <div class="field">
-        <label>Perks list</label>
-        <div id="perks-rows"></div>
-        <button class="btn-a" id="perk-add" style="align-self: flex-start; margin-top: 6px;">+ Add perk</button>
+        <div class="field">
+          <label>Intro paragraph</label>
+          <textarea id="careers-intro"></textarea>
+        </div>
+        <div class="field">
+          <label>Contact email</label>
+          <input type="email" id="careers-contact"/>
+        </div>
+        <div class="field">
+          <label>Perks list</label>
+          <div id="perks-rows"></div>
+          <button class="btn-a" id="perk-add" style="align-self: flex-start; margin-top: 6px;">+ Add perk</button>
+        </div>
       </div>
     </div>
 
@@ -721,13 +721,19 @@
         <h2>Staff &amp; logins</h2>
       </div>
       <p class="help" style="margin-bottom: 12px;">
-        Create accounts for the team who manage the website. Every account is an
-        <strong>Admin</strong> and can open this content console.
+        Create accounts for the team. <strong>Admin</strong> sees every tab including
+        Settings and Staff &amp; Logins; <strong>Editor</strong> sees only Events, Site
+        Content, Photos and Careers.
       </p>
       <form id="staff-form" class="field-row" style="align-items: flex-end; gap: 12px; flex-wrap: wrap;">
         <div class="field"><label>Email</label><input type="email" id="staff-email" placeholder="name@doppler.coffee" required/></div>
         <div class="field"><label>Password</label><input type="text" id="staff-pass" placeholder="min 6 characters" required/></div>
-        <input type="hidden" id="staff-role" value="admin"/>
+        <div class="field"><label>Role</label>
+          <select id="staff-role">
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
         <button type="submit" class="btn-a primary" style="margin-bottom: 2px;">+ Add staff</button>
       </form>
       <div id="staff-list" class="list" style="margin-top: 16px;"></div>
@@ -856,22 +862,41 @@ const KIND_COLORS = {
 const gate = document.getElementById('gate');
 const app  = document.getElementById('app');
 
-function openApp() {
+// Tabs an Editor may use. Admin sees everything.
+const EDITOR_TABS = ['events', 'content', 'photos', 'careers'];
+let currentRole = 'admin';
+
+function applyRoleVisibility(role) {
+  const isAdmin = role === 'admin';
+  document.querySelectorAll('.tab').forEach((t) => {
+    t.style.display = (isAdmin || EDITOR_TABS.includes(t.dataset.tab)) ? '' : 'none';
+  });
+  // If the active tab is now hidden, fall back to the first visible one.
+  const active = document.querySelector('.tab.active');
+  if (!active || active.style.display === 'none') {
+    const first = document.querySelector('.tab:not([style*="display: none"])');
+    if (first) first.click();
+  }
+}
+
+function openApp(role) {
+  currentRole = role || 'admin';
   gate.style.display = 'none';
   app.style.display = 'block';
   renderAll();
-  if (typeof bootStaff === 'function') bootStaff();
+  applyRoleVisibility(currentRole);
+  if (typeof bootStaff === 'function') bootStaff(currentRole);
 }
 function closeApp() {
   app.style.display = 'none';
   gate.style.display = 'block';
 }
 
-// Phase 1: the content console is admin-only (the single role).
+// The content console is open to Admins and Editors. Editors get a reduced tab set.
 function enter(me) {
-  if (me && me.role === 'admin') {
+  if (me && (me.role === 'admin' || me.role === 'editor')) {
     document.getElementById('gate-redirect').style.display = 'none';
-    openApp();
+    openApp(me.role);
   } else if (me) {
     const r = document.getElementById('gate-redirect');
     r.style.display = 'block';
@@ -1404,9 +1429,10 @@ function renderAll() {
   const API = window.DopplerAPI;
   let booted = false;
 
-  function bootStaff() {
+  function bootStaff(role) {
     if (booted) return; booted = true;
-    initUsers(); initContent();
+    initContent();
+    if (role === 'admin') initUsers(); // staff management is admin-only
   }
   window.bootStaff = bootStaff;
 
@@ -1421,7 +1447,9 @@ function renderAll() {
       row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.08);';
       row.innerHTML =
         '<div style="flex:1;"><strong>' + escapeHtml(u.email) + '</strong></div>' +
-        '<span class="role" style="opacity:.55;">§ ADMIN</span>' +
+        '<select data-role="' + u.id + '">' +
+          ['editor', 'admin'].map(r => '<option value="' + r + '"' + (u.role === r ? ' selected' : '') + '>' + r + '</option>').join('') +
+        '</select>' +
         '<button class="btn-a" data-reset="' + u.id + '">Reset password</button>' +
         '<button class="btn-a danger" data-del="' + u.id + '">Delete</button>';
       list.appendChild(row);
@@ -1441,6 +1469,11 @@ function renderAll() {
       } catch (err) { alert(err.message); }
     });
     const list = document.getElementById('staff-list');
+    list.addEventListener('change', async (e) => {
+      const sel = e.target.closest('[data-role]'); if (!sel) return;
+      try { await API.updateStaff(sel.dataset.role, { role: sel.value }); toast('Role updated.'); }
+      catch (err) { alert(err.message); renderStaff(); }
+    });
     list.addEventListener('click', async (e) => {
       const reset = e.target.closest('[data-reset]');
       const del = e.target.closest('[data-del]');

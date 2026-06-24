@@ -6,7 +6,7 @@ const { requireRole } = require('../auth');
 const router = express.Router();
 router.use(requireRole('admin')); // admin only (requireRole always allows admin)
 
-const ROLES = ['admin']; // phase 1: single role
+const ROLES = ['admin', 'editor']; // admin (full) + editor (content only)
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 router.get('/', async (req, res) => {
