@@ -1,8 +1,8 @@
 # Doppler — Café PC Deployment (Windows 11)
 
 The Node server lives in `server/` inside the site repo. It serves the static site
-(`order.html`, `admin.html`, `index.html`, assets) **and** the API from the same origin,
-so the customer order page, the admin console, and the database all run from this one PC.
+(`index.html`, `admin.html`, `menu.html`, assets) **and** the content API from the same
+origin, so the public site, the admin content console, and the database all run from this one PC.
 
 ## 1. Prerequisites
 - Install Node.js 18+ and PostgreSQL.
@@ -21,22 +21,17 @@ copy .env.example .env
 ::   PUBLIC_BASE_URL-> https://app.<yourdomain>  (set after step 4)
 npm install
 npm run init-db
-:: First account must be an admin:
-npm run create-user -- owner@doppler.coffee a-strong-password admin
+:: Create an admin account (content console):
+npm run create-user -- owner@doppler.coffee a-strong-password
 ```
 
-### Staff roles & the live-orders page
-Accounts have a role: **admin**, **cashier**, **bar**, or **kitchen**. Create them either with
-the CLI (`npm run create-user -- <email> <password> <role>`) or, more easily, in
-**Admin → Staff & Logins**.
-
-- **Admin** opens the full admin console (`/admin.html`).
-- **Bar / Kitchen / Cashier** open the **Live Orders page** (`/orders.html`) and nothing else:
-  - Bar & Kitchen each see only their station's items and tap **"ready"** when done.
-  - An order is **served** automatically once every involved station is ready.
-  - Cashier sees all active orders, takes payment (**Mark paid**, awards points) and **redeems** points.
-`npm run init-db` prints `schema applied`. `npm test` should report 7 passing tests.
-Optionally load sample seats: `psql -U doppler -d doppler -f seed.sql`.
+### Staff & logins (phase 1)
+Phase 1 has a single role: **admin**. Create accounts with the CLI
+(`npm run create-user -- <email> <password>`) or in **Admin → Staff & Logins**.
+Every account opens the content console (`/admin.html`) to edit site copy, photos,
+events, jobs, careers, and settings. (Orders / seats / customers / points are not
+part of phase 1.)
+`npm run init-db` prints `schema applied`.
 
 ## 3. Keep it running (pm2)
 ```
@@ -69,14 +64,11 @@ pm2 save
    cloudflared tunnel run doppler
    cloudflared service install
    ```
-4. In **admin → Points**, set **Site base URL** to `https://app.<yourdomain>`, save,
-   then (re)generate and print the seat QR codes from **Seats & QR**.
-
 ## 5. Verify end to end
-- Visit `https://app.<yourdomain>/admin.html` from a phone on **cellular** → staff login works over HTTPS.
-- Scan a seat QR → the order page loads, you can place an order, and it appears on the
-  admin Orders board live. Advance status → the customer's screen updates. Mark paid →
-  points are credited and visible under Customers.
+- Visit `https://app.<yourdomain>/` → the marketing site loads; `/menu.html` shows the menu.
+- Visit `https://app.<yourdomain>/admin.html` from a phone on **cellular** → admin login works over HTTPS.
+- In the admin console, edit some copy or swap a photo, **Publish**, then reload the
+  home page → the change is live.
 
 ## Backups
 Schedule a daily dump (Task Scheduler):
@@ -85,6 +77,6 @@ pg_dump -U doppler doppler > backup-%DATE%.sql
 ```
 
 ## Notes
-- Ordering depends on this PC being **on** with **internet up** (traffic routes through Cloudflare).
-- Change the staff password any time with `npm run create-user -- <email> <newpassword>` (upserts).
+- The site is served from this PC; it must be **on** with **internet up** (traffic routes through Cloudflare).
+- Change the admin password any time with `npm run create-user -- <email> <newpassword>` (upserts).
 - The old client-side admin passcode is gone; admin is now gated by real staff login.

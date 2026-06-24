@@ -606,10 +606,6 @@
       <button class="tab" data-tab="jobs">§ Jobs</button>
       <button class="tab" data-tab="careers">§ Careers Copy</button>
       <button class="tab" data-tab="settings">§ Settings</button>
-      <button class="tab" data-tab="orders">§ Orders</button>
-      <button class="tab" data-tab="seats">§ Seats &amp; QR</button>
-      <button class="tab" data-tab="customers">§ Customers</button>
-      <button class="tab" data-tab="points">§ Points</button>
       <button class="tab" data-tab="users">§ Staff &amp; Logins</button>
     </div>
 
@@ -719,93 +715,19 @@
       </div>
     </div>
 
-    <!-- ORDERS PANEL -->
-    <div class="panel" data-panel="orders">
-      <div class="panel-head">
-        <h2>Live orders</h2>
-        <div class="actions">
-          <button class="btn-a" id="orders-refresh">Refresh</button>
-        </div>
-      </div>
-      <p class="help" style="margin-bottom: 12px;">New orders appear here in real time. Advance the status, mark paid to award points, or redeem points against a paid order.</p>
-      <div id="orders-board" class="list"></div>
-    </div>
-
-    <!-- SEATS & QR PANEL -->
-    <div class="panel" data-panel="seats">
-      <div class="panel-head">
-        <h2>Seats &amp; QR</h2>
-        <div class="actions">
-          <button class="btn-a" id="print-all-qr">Print all QR</button>
-        </div>
-      </div>
-      <form id="seat-form" class="field-row" style="align-items: flex-end; gap: 12px;">
-        <div class="field"><label>Label</label><input type="text" id="seat-label" placeholder="Table 7" required/></div>
-        <div class="field"><label>Zone (optional)</label><input type="text" id="seat-zone" placeholder="Floor Hall"/></div>
-        <button type="submit" class="btn-a primary" style="margin-bottom: 2px;">+ Add seat</button>
-      </form>
-      <div id="seats-list" class="list" style="margin-top: 16px;"></div>
-    </div>
-
-    <!-- CUSTOMERS PANEL -->
-    <div class="panel" data-panel="customers">
-      <div class="panel-head">
-        <h2>Customers &amp; points</h2>
-      </div>
-      <div class="field">
-        <label>Search</label>
-        <input type="text" id="cust-search" placeholder="Search by email or name"/>
-      </div>
-      <div id="customers-list" class="list"></div>
-      <div id="customer-detail" style="margin-top: 16px;"></div>
-    </div>
-
-    <!-- POINTS SETTINGS PANEL -->
-    <div class="panel" data-panel="points">
-      <div class="panel-head">
-        <h2>Points settings</h2>
-        <div class="actions">
-          <button class="btn-a primary" id="save-settings">Save</button>
-        </div>
-      </div>
-      <div class="field-row-3">
-        <div class="field"><label>Points earned per ₹1</label><input type="number" step="0.01" id="set-earn"/><span class="help">0.1 = 1 point per ₹10</span></div>
-        <div class="field"><label>₹ value per point</label><input type="number" step="0.01" id="set-redeem"/></div>
-        <div class="field"><label>Minimum redemption (points)</label><input type="number" id="set-min"/></div>
-      </div>
-      <div class="field">
-        <label>Tax (%)</label>
-        <input type="number" step="0.01" id="set-tax"/>
-        <span class="help">Applied to the order subtotal on the customer's cart. Points are still earned on the pre-tax subtotal.</span>
-      </div>
-      <div class="field">
-        <label>Site base URL (used in QR codes)</label>
-        <input type="url" id="set-url" placeholder="https://app.yourdomain.com"/>
-        <span class="help">The public HTTPS URL of this server. QR codes encode &lt;base&gt;/order.html?seat=&lt;id&gt;.</span>
-      </div>
-      <p id="settings-msg" class="help"></p>
-    </div>
-
     <!-- STAFF & LOGINS PANEL -->
     <div class="panel" data-panel="users">
       <div class="panel-head">
         <h2>Staff &amp; logins</h2>
       </div>
       <p class="help" style="margin-bottom: 12px;">
-        Create accounts for your team and assign a role. <strong>Bar</strong> &amp; <strong>Kitchen</strong> log into the
-        <a href="orders.html" target="_blank" rel="noopener">Live Orders page</a> and see only their station; <strong>Cashier</strong> takes payment and redeems points; <strong>Admin</strong> can open this console.
+        Create accounts for the team who manage the website. Every account is an
+        <strong>Admin</strong> and can open this content console.
       </p>
       <form id="staff-form" class="field-row" style="align-items: flex-end; gap: 12px; flex-wrap: wrap;">
         <div class="field"><label>Email</label><input type="email" id="staff-email" placeholder="name@doppler.coffee" required/></div>
         <div class="field"><label>Password</label><input type="text" id="staff-pass" placeholder="min 6 characters" required/></div>
-        <div class="field"><label>Role</label>
-          <select id="staff-role">
-            <option value="bar">Bar</option>
-            <option value="kitchen">Kitchen</option>
-            <option value="cashier">Cashier</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
+        <input type="hidden" id="staff-role" value="admin"/>
         <button type="submit" class="btn-a primary" style="margin-bottom: 2px;">+ Add staff</button>
       </form>
       <div id="staff-list" class="list" style="margin-top: 16px;"></div>
@@ -919,7 +841,6 @@
 <script src="doppler-data.js"></script>
 <script src="doppler-backend.js"></script>
 <script src="site-content.js"></script>
-<script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js" crossorigin="anonymous"></script>
 <script>
 
 const KIND_COLORS = {
@@ -946,17 +867,15 @@ function closeApp() {
   gate.style.display = 'block';
 }
 
-// The admin console is admin-only. Non-admin staff are pointed at the live-orders page.
+// Phase 1: the content console is admin-only (the single role).
 function enter(me) {
   if (me && me.role === 'admin') {
     document.getElementById('gate-redirect').style.display = 'none';
     openApp();
-  } else {
+  } else if (me) {
     const r = document.getElementById('gate-redirect');
     r.style.display = 'block';
-    r.innerHTML = 'This is a <strong>' + (me ? me.role : 'station') +
-      '</strong> account — the admin console is for admins only.<br/>' +
-      '<a href="orders.html" style="color: var(--ember);">→ Open the Live Orders page</a>';
+    r.innerHTML = 'This account cannot open the content console.';
   }
 }
 
@@ -1487,171 +1406,9 @@ function renderAll() {
 
   function bootStaff() {
     if (booted) return; booted = true;
-    initOrders(); initSeats(); initCustomers(); initSettings(); initUsers(); initContent();
+    initUsers(); initContent();
   }
   window.bootStaff = bootStaff;
-
-  // ---- Orders board (live via SSE) ----
-  function stationBadge(needed, ready, name) {
-    if (!needed) return '';
-    return '<span style="font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid ' +
-      (ready ? '#86efac;background:#dcfce7;color:#166534' : '#fde047;background:#fef9c3;color:#854d0e') +
-      ';">' + name + ' ' + (ready ? '✓' : '…') + '</span>';
-  }
-  async function renderOrders() {
-    let orders;
-    try { orders = await API.listOrders({ active: 1 }); } catch (e) { return; }
-    const board = document.getElementById('orders-board');
-    board.innerHTML = '';
-    if (!orders.length) { board.innerHTML = '<p class="help">No active orders.</p>'; return; }
-    orders.forEach((o) => {
-      const fmt = (arr) => arr.map(i => escapeHtml(i.qty + '× ' + i.name) + (i.addons && i.addons.length ? ' <em style="opacity:.7;">(+ ' + i.addons.map(a => escapeHtml(a.name)).join(', ') + ')</em>' : '')).join(', ');
-      const bar = (o.items || []).filter(i => i.station === 'bar');
-      const kit = (o.items || []).filter(i => i.station === 'kitchen');
-      const total = o.subtotal + (o.tax_amount || 0);
-      const card = document.createElement('div');
-      card.style.cssText = 'display:flex;flex-direction:column;gap:6px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,.08);';
-      card.innerHTML =
-        '<div><strong>' + escapeHtml(o.seat_label) + '</strong> · <span style="text-transform:uppercase;font-size:11px;opacity:.7;">' + escapeHtml(o.status) + '</span> · <strong>₹' + total + '</strong>' + (o.tax_amount ? ' <span style="opacity:.6;font-size:12px;">(incl ₹' + o.tax_amount + ' tax)</span>' : '') + '</div>' +
-        '<div style="font-size:12px;opacity:.65;">' + escapeHtml(o.customer_email) + '</div>' +
-        (bar.length ? '<div style="font-size:13px;"><b>Bar:</b> ' + fmt(bar) + '</div>' : '') +
-        (kit.length ? '<div style="font-size:13px;"><b>Kitchen:</b> ' + fmt(kit) + '</div>' : '') +
-        '<div style="display:flex;gap:6px;">' + stationBadge(o.needs_bar, o.bar_ready, 'Bar') + stationBadge(o.needs_kitchen, o.kitchen_ready, 'Kitchen') + '</div>' +
-        '<div class="actions" style="gap:8px;">' +
-          (o.needs_bar && !o.bar_ready ? '<button class="btn-a" data-act="ready" data-station="bar" data-id="' + o.id + '">Bar ready</button>' : '') +
-          (o.needs_kitchen && !o.kitchen_ready ? '<button class="btn-a" data-act="ready" data-station="kitchen" data-id="' + o.id + '">Kitchen ready</button>' : '') +
-          (o.status !== 'paid' ? '<button class="btn-a primary" data-act="pay" data-id="' + o.id + '">Mark paid</button>' : '') +
-          (o.status === 'paid' ? '<button class="btn-a" data-act="redeem" data-id="' + o.id + '">Redeem pts</button>' : '') +
-          (o.status !== 'paid' ? '<button class="btn-a" data-act="cancel" data-id="' + o.id + '">Cancel</button>' : '') +
-        '</div>';
-      board.appendChild(card);
-    });
-  }
-  function initOrders() {
-    renderOrders();
-    try { API.streamBoard(() => renderOrders()); } catch (e) {}
-    document.getElementById('orders-refresh').addEventListener('click', renderOrders);
-    document.getElementById('orders-board').addEventListener('click', async (e) => {
-      const b = e.target.closest('button'); if (!b) return;
-      const id = b.dataset.id;
-      try {
-        if (b.dataset.act === 'ready') { await API.setReady(id, b.dataset.station); }
-        else if (b.dataset.act === 'cancel') { await API.setStatus(id, 'cancelled'); }
-        else if (b.dataset.act === 'pay') { const r = await API.payOrder(id); toast('Paid · +' + r.pointsEarned + ' pts (balance ' + r.pointsBalance + ')'); }
-        else if (b.dataset.act === 'redeem') {
-          const p = parseInt(prompt('Points to redeem:'), 10);
-          if (Number.isInteger(p)) { const r = await API.redeemOrder(id, p); toast('Redeemed ₹' + r.redeemedValue + ' (balance ' + r.pointsBalance + ')'); }
-        }
-        renderOrders();
-      } catch (err) { alert(err.message); }
-    });
-  }
-
-  // ---- Seats & QR ----
-  async function renderSeats() {
-    let seats, settings;
-    try { seats = await API.listSeats(); settings = await API.getSettings(); } catch (e) { return; }
-    const base = (settings.site_base_url || window.location.origin).replace(/\/+$/, '');
-    const list = document.getElementById('seats-list');
-    list.innerHTML = '';
-    seats.forEach((s) => {
-      const url = base + '/order.html?seat=' + s.id;
-      const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,.08);';
-      row.innerHTML =
-        '<div style="flex:1;"><strong>' + escapeHtml(s.label) + '</strong>' + (s.zone ? ' <span style="opacity:.6;">· ' + escapeHtml(s.zone) + '</span>' : '') +
-          (s.active ? '' : ' <span style="color:#b3261e;">(inactive)</span>') +
-          '<div style="font-size:11px;opacity:.5;font-family:\'JetBrains Mono\',monospace;word-break:break-all;">' + escapeHtml(url) + '</div></div>' +
-        '<canvas></canvas>' +
-        '<div class="actions" style="flex-direction:column;gap:6px;">' +
-          '<a class="btn-a" data-dl download="' + escapeHtml(s.label) + '.png">Download QR</a>' +
-          '<button class="btn-a" data-toggle="' + s.id + '" data-active="' + s.active + '">' + (s.active ? 'Deactivate' : 'Activate') + '</button>' +
-        '</div>';
-      list.appendChild(row);
-      const canvas = row.querySelector('canvas');
-      window.QRCode.toCanvas(canvas, url, { width: 132, margin: 1 }, () => {
-        row.querySelector('[data-dl]').href = canvas.toDataURL('image/png');
-      });
-    });
-  }
-  function initSeats() {
-    renderSeats();
-    document.getElementById('seat-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        await API.createSeat(document.getElementById('seat-label').value, document.getElementById('seat-zone').value);
-        e.target.reset(); renderSeats(); toast('Seat added.');
-      } catch (err) { alert(err.message); }
-    });
-    document.getElementById('seats-list').addEventListener('click', async (e) => {
-      const b = e.target.closest('[data-toggle]'); if (!b) return;
-      try { await API.updateSeat(b.dataset.toggle, { active: b.dataset.active !== 'true' }); renderSeats(); }
-      catch (err) { alert(err.message); }
-    });
-    document.getElementById('print-all-qr').addEventListener('click', () => window.print());
-  }
-
-  // ---- Customers ----
-  async function renderCustomers(q) {
-    let list;
-    try { list = await API.listCustomers(q); } catch (e) { return; }
-    const el = document.getElementById('customers-list');
-    if (!list.length) { el.innerHTML = '<p class="help">No customers found.</p>'; return; }
-    el.innerHTML = list.map(c =>
-      '<div class="cust-row" data-id="' + c.id + '" style="cursor:pointer;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.08);">' +
-        escapeHtml(c.email) + ' · <strong>' + c.points + ' pts</strong>' + (c.name ? ' · ' + escapeHtml(c.name) : '') +
-      '</div>').join('');
-  }
-  function initCustomers() {
-    renderCustomers('');
-    document.getElementById('cust-search').addEventListener('input', (e) => renderCustomers(e.target.value));
-    document.getElementById('customers-list').addEventListener('click', async (e) => {
-      const row = e.target.closest('.cust-row'); if (!row) return;
-      let c;
-      try { c = await API.getCustomer(row.dataset.id); } catch (err) { alert(err.message); return; }
-      const hist = (c.history || []).map(h => (h.delta > 0 ? '+' : '') + h.delta + ' (' + escapeHtml(h.reason) + ')').join(', ');
-      const detail = document.getElementById('customer-detail');
-      detail.innerHTML =
-        '<div class="m-section"><div class="m-section-head">' + escapeHtml(c.email) + '</div>' +
-        '<p><strong>' + c.points + ' pts</strong> · last visit ' + new Date(c.last_visit).toLocaleString() + '</p>' +
-        '<p style="font-size:12px;opacity:.7;">History: ' + (hist || 'none') + '</p>' +
-        '<button class="btn-a" id="adj-btn">Adjust points</button></div>';
-      document.getElementById('adj-btn').addEventListener('click', async () => {
-        const delta = parseInt(prompt('Adjust by (e.g. -50 or 100):'), 10);
-        if (!Number.isInteger(delta) || delta === 0) return;
-        const reason = prompt('Reason:') || 'adjust';
-        try {
-          await API.adjustCustomer(c.id, delta, reason);
-          renderCustomers(document.getElementById('cust-search').value);
-          detail.innerHTML = ''; toast('Points adjusted.');
-        } catch (err) { alert(err.message); }
-      });
-    });
-  }
-
-  // ---- Points settings ----
-  async function initSettings() {
-    let s;
-    try { s = await API.getSettings(); } catch (e) { return; }
-    document.getElementById('set-earn').value = s.earn_per_rupee;
-    document.getElementById('set-redeem').value = s.redeem_rupee_per_point;
-    document.getElementById('set-min').value = s.min_redeem_points;
-    document.getElementById('set-tax').value = s.tax_percent;
-    document.getElementById('set-url').value = s.site_base_url;
-    document.getElementById('save-settings').addEventListener('click', async () => {
-      try {
-        await API.putSettings({
-          earn_per_rupee: parseFloat(document.getElementById('set-earn').value),
-          redeem_rupee_per_point: parseFloat(document.getElementById('set-redeem').value),
-          min_redeem_points: parseInt(document.getElementById('set-min').value, 10),
-          tax_percent: parseFloat(document.getElementById('set-tax').value),
-          site_base_url: document.getElementById('set-url').value.trim(),
-        });
-        document.getElementById('settings-msg').textContent = 'Saved.';
-        toast('Settings saved.');
-      } catch (e) { document.getElementById('settings-msg').textContent = e.message; }
-    });
-  }
 
   // ---- Staff & logins ----
   async function renderStaff() {
@@ -1664,9 +1421,7 @@ function renderAll() {
       row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.08);';
       row.innerHTML =
         '<div style="flex:1;"><strong>' + escapeHtml(u.email) + '</strong></div>' +
-        '<select data-role="' + u.id + '">' +
-          ['bar', 'kitchen', 'cashier', 'admin'].map(r => '<option value="' + r + '"' + (u.role === r ? ' selected' : '') + '>' + r + '</option>').join('') +
-        '</select>' +
+        '<span class="role" style="opacity:.55;">§ ADMIN</span>' +
         '<button class="btn-a" data-reset="' + u.id + '">Reset password</button>' +
         '<button class="btn-a danger" data-del="' + u.id + '">Delete</button>';
       list.appendChild(row);
@@ -1686,11 +1441,6 @@ function renderAll() {
       } catch (err) { alert(err.message); }
     });
     const list = document.getElementById('staff-list');
-    list.addEventListener('change', async (e) => {
-      const sel = e.target.closest('[data-role]'); if (!sel) return;
-      try { await API.updateStaff(sel.dataset.role, { role: sel.value }); toast('Role updated.'); }
-      catch (err) { alert(err.message); renderStaff(); }
-    });
     list.addEventListener('click', async (e) => {
       const reset = e.target.closest('[data-reset]');
       const del = e.target.closest('[data-del]');

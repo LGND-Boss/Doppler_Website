@@ -3,14 +3,10 @@ const bcrypt = require('bcrypt');
 const db = require('../db');
 
 async function main() {
-  const [, , email, password, roleArg] = process.argv;
-  const role = roleArg || 'admin';
+  const [, , email, password] = process.argv;
+  const role = 'admin'; // phase 1 has a single role: admin (content console)
   if (!email || !password) {
-    console.error('Usage: npm run create-user -- <email> <password> [admin|cashier|bar|kitchen]');
-    process.exit(1);
-  }
-  if (!['admin', 'cashier', 'bar', 'kitchen'].includes(role)) {
-    console.error('Invalid role:', role, '(use admin|cashier|bar|kitchen)');
+    console.error('Usage: npm run create-user -- <email> <password>');
     process.exit(1);
   }
   const hash = await bcrypt.hash(password, 12);

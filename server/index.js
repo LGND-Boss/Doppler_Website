@@ -14,16 +14,11 @@ app.post('/api/login', auth.login);
 app.post('/api/logout', auth.logout);
 app.get('/api/me', auth.me);
 
-// Feature routers
-app.use('/api', require('./routes/public'));
-app.use('/api/orders', require('./routes/orders'));
-app.use('/api/seats', require('./routes/seats'));
-app.use('/api/customers', require('./routes/customers'));
-app.use('/api/settings', require('./routes/settings'));
+// Feature routers (phase 1: marketing site + content admin only)
 app.use('/api/staff', require('./routes/staff'));
 app.use('/api/content', require('./routes/content'));
 
-// Static site (order.html, admin.html, index.html, assets) — same origin as API.
+// Static site (admin.html, index.html, menu.html, assets) — same origin as API.
 // server/ lives inside the site repo, so the static root is the parent directory.
 app.use(express.static(path.join(__dirname, '..')));
 
