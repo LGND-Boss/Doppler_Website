@@ -8,6 +8,7 @@
     "start": "node index.js",
     "test": "echo \"phase 1: no automated tests\"",
     "create-user": "node scripts/create-user.js",
+    "seed-menu": "node scripts/seed-menu.js",
     "init-db": "node -e \"const fs=require('fs');const{pool}=require('./db');pool.query(fs.readFileSync('schema.sql','utf8')).then(()=>{console.log('schema applied');return pool.end()}).catch(e=>{console.error(e);process.exit(1)})\""
   },
   "dependencies": {

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1a1410">
-<title>Menu · Sunset Shift 2.0 · Doppler</title>
+<title>Menu · Doppler</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
@@ -207,31 +207,6 @@
     color: rgba(26,20,16,0.78);
   }
 
-  /* Category add-ons */
-  .cat-addons {
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px dashed rgba(26,20,16,0.2);
-  }
-  .cat-addons-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    opacity: 0.5;
-    margin-bottom: 10px;
-  }
-  .addon-pill {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    padding: 4px 10px;
-    margin: 0 6px 6px 0;
-    border: 1px solid rgba(26,20,16,0.18);
-    border-radius: 999px;
-  }
-  .addon-pill em { font-style: normal; opacity: 0.6; }
-
   /* Add-on / footer banner */
   .menu-banner {
     background: var(--ink);
@@ -330,88 +305,96 @@
   <footer class="menu-foot" id="m-foot"></footer>
 </div>
 
+<script src="doppler-data.js"></script>
 <script>
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
-
-  function renderCol(cats, groups) {
-    return '<div class="menu-col">' + cats.map(cat => {
-      const items = (cat.items || []).map(it => {
-        const itemAddons = (it.addons || []).map(a => esc(a.name) + ' ₹' + a.price).join(' · ');
-        return `
-        <div class="item">
-          <div>
-            <div class="item-name">${esc(it.name)}</div>
-            ${it.note ? '<span class="item-note">' + esc(it.note) + '</span>' : ''}
-            ${itemAddons ? '<span class="item-note">+ ' + itemAddons + '</span>' : ''}
-          </div>
-          ${it.price != null ? '<div class="item-price"><span class="cur">₹</span>' + esc(it.price) + '</div>' : ''}
-        </div>`;
-      }).join('');
-      // category-level add-ons (resolved from groups)
-      const catAddons = (cat.addonGroups || []).flatMap(g => groups[g] || []);
-      const addonBlock = catAddons.length ? `
-        <div class="cat-addons">
-          <div class="cat-addons-label">Add-ons</div>
-          ${catAddons.map(a => '<span class="addon-pill">' + esc(a.name) + ' <em>₹' + a.price + '</em></span>').join('')}
-        </div>` : '';
-      const station = cat.station || 'bar';
-      return `
-        <div class="cat">
-          <div class="cat-head">
-            <div class="cat-title">${esc(cat.title)}</div>
-            <div class="cat-code">§ ${esc(station)}</div>
-          </div>
-          ${items}
-          ${addonBlock}
-        </div>`;
-    }).join('') + '</div>';
-  }
+  function nl2br(s) { return esc(s).replace(/\n/g, '<br/>'); }
 
   function renderMenu(m) {
-    document.title = 'Menu · Doppler';
+    document.title = 'Menu · ' + ((m.titleTop || '') + ' ' + (m.titleMid || '') + ' ' + (m.titleSerif || '')).trim() + ' · Doppler';
+
     document.getElementById('m-eyebrow').textContent = '§ Menu · ' + (m.edition || '');
-    document.getElementById('m-title').innerHTML = 'The<br/>full<br/><span class="serif">menu.</span>';
+    document.getElementById('m-title').innerHTML =
+      (m.titleTop ? esc(m.titleTop) + '<br/>' : '') +
+      (m.titleMid ? esc(m.titleMid) + '<br/>' : '') +
+      (m.titleSerif ? '<span class="serif">' + esc(m.titleSerif) + '</span>' : '');
     document.getElementById('m-meta').innerHTML =
-      'Doppler · coffee<br/>C-Scheme · Jaipur<span class="num">06:00 — 22:30</span>';
+      nl2br(m.address || '') + (m.hours ? '<span class="num">' + esc(m.hours) + '</span>' : '');
 
-    // Split categories by station: drinks (bar) on the left, food (kitchen) on the right.
+    // body cols
+    const body = document.getElementById('m-body');
     const cats = m.categories || [];
-    const left  = cats.filter(c => (c.station || 'bar') !== 'kitchen');
-    const right = cats.filter(c => (c.station || 'bar') === 'kitchen');
-    const groups = m.addonGroups || {};
-    document.getElementById('m-body').innerHTML = renderCol(left, groups) + renderCol(right, groups);
+    const left  = cats.filter(c => c.column !== 'right');
+    const right = cats.filter(c => c.column === 'right');
 
+    function renderCol(arr) {
+      return '<div class="menu-col">' + arr.map(cat => {
+        const items = (cat.items || []).map(it => `
+          <div class="item">
+            <div>
+              <div class="item-name">${esc(it.name)}</div>
+              ${it.note ? '<span class="item-note">' + esc(it.note) + '</span>' : ''}
+            </div>
+            ${it.price ? '<div class="item-price"><span class="cur">₹</span>' + esc(it.price) + '</div>' : ''}
+          </div>`).join('');
+        return `
+          <div class="cat">
+            <div class="cat-head">
+              <div class="cat-title">${esc(cat.title)}</div>
+              ${cat.code ? '<div class="cat-code">' + esc(cat.code) + '</div>' : ''}
+            </div>
+            ${cat.sub ? '<div class="cat-sub">' + esc(cat.sub) + '</div>' : ''}
+            ${items}
+          </div>`;
+      }).join('') + '</div>';
+    }
+    body.innerHTML = renderCol(left) + renderCol(right);
+
+    // banner
+    const addonsRows = (m.addons || []).map(a =>
+      `<span>${esc(a.name)} <em style="font-style: normal; opacity: 0.7;">${esc(a.price)}</em></span>`
+    ).join('');
     document.getElementById('m-banner').innerHTML = `
       <div>
-        <div class="label">§ The bar</div>
-        <h4>Slow water, better coffee.</h4>
-        <p>House-roasted beans, weekly. Matcha & hojicha ceremonial grade, dairy-free by default. Ask the bar which lot is on today.</p>
+        <div class="label">§ Add-ons · Milk options</div>
+        <h4>Make it your own.</h4>
+        <div class="add-row">${addonsRows}</div>
       </div>
       <div>
         <div class="label">§ The kitchen</div>
-        <h4>From the brick oven.</h4>
-        <p>All-day brekkie, snacks, pizzette, bowls and plates. Made to share — or not.</p>
+        <h4>${esc(m.kitchenTitle || '')}</h4>
+        <p>${esc(m.kitchenBody || '')}</p>
+        ${m.kitchenRange ? '<div style="margin-top: 12px; font-family: \'JetBrains Mono\', monospace; font-size: 13px; opacity: 0.85;">' + esc(m.kitchenRange) + '</div>' : ''}
       </div>
       <div>
         <div class="label">§ The fine print</div>
-        <h4>One last thing.</h4>
-        <p>All prices in ₹ and exclude applicable taxes unless stated. Veg, vegan, egg and allergen options available — just ask.</p>
+        <h4>${esc(m.finePrintTitle || '')}</h4>
+        <p>${esc(m.finePrintBody || '')}</p>
       </div>`;
 
+    // foot
     document.getElementById('m-foot').innerHTML = `
-      <span>© 2026 Doppler Coffee · ${esc(m.edition || '')}</span>
-      <span class="serif">Slow water. Second cup is always.</span>
-      <span>26.9130°N · 75.8060°E</span>`;
+      <span>${esc(m.footCopyright || '')}</span>
+      <span class="serif">${esc(m.footTagline || '')}</span>
+      <span>${esc(m.footCoords || '')}</span>`;
   }
 
-  fetch('menu.json')
-    .then(r => r.json())
-    .then(renderMenu)
-    .catch(() => { document.getElementById('m-body').innerHTML = '<div class="menu-col"><p>Menu failed to load.</p></div>'; });
+  // Published menu comes from the server (/api/menu). Fall back to the built-in
+  // defaults if nothing is published yet or the request fails.
+  async function loadAndRender() {
+    let m = window.DopplerData.MENU_DEFAULTS;
+    try {
+      const r = await fetch('/api/menu', { credentials: 'same-origin' });
+      const doc = r.ok ? await r.json() : {};
+      if (doc && Object.keys(doc).length) m = doc;
+    } catch (e) { /* keep defaults */ }
+    renderMenu(m);
+  }
+  loadAndRender();
 </script>
 
 </body>

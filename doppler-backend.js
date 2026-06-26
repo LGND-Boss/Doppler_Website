@@ -10,8 +10,9 @@
   }
 
   window.DopplerAPI = {
-    // menu (canonical, used by the view-only menu page)
-    loadMenu: () => req('GET', 'menu.json'),
+    // menu (public read; admin/editor write) — published to the DB like content
+    getMenu: () => req('GET', '/api/menu'),
+    putMenu: (data) => req('PUT', '/api/menu', data),
 
     // auth
     login: (email, password) => req('POST', '/api/login', { email, password }),

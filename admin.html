@@ -1525,11 +1525,16 @@ document.getElementById('img-reset-all').addEventListener('click', async () => {
 });
 
 // ====== MENU ======
-function loadMenuState() {
-  MENU_STATE = JSON.parse(JSON.stringify(window.DopplerData.getMenu()));
+// Load the published menu from the server (falls back to built-in defaults
+// before anything is published, or if the request fails).
+async function loadMenuState() {
+  let doc = {};
+  try { doc = await window.DopplerAPI.getMenu(); } catch (e) { doc = {}; }
+  const base = (doc && Object.keys(doc).length) ? doc : window.DopplerData.MENU_DEFAULTS;
+  MENU_STATE = JSON.parse(JSON.stringify(base));
 }
 function renderMenu() {
-  if (!MENU_STATE) loadMenuState();
+  if (!MENU_STATE) return;
   const m = MENU_STATE;
   document.getElementById('m-edition').value     = m.edition || '';
   document.getElementById('m-title-top').value   = m.titleTop || '';
@@ -1709,7 +1714,7 @@ document.getElementById('m-addon-add').addEventListener('click', () => {
   renderMenuAddons();
 });
 
-document.getElementById('menu-save').addEventListener('click', () => {
+document.getElementById('menu-save').addEventListener('click', async () => {
   // pull top-level fields off the form into MENU_STATE
   MENU_STATE.edition        = document.getElementById('m-edition').value.trim();
   MENU_STATE.titleTop       = document.getElementById('m-title-top').value;
@@ -1725,18 +1730,22 @@ document.getElementById('menu-save').addEventListener('click', () => {
   MENU_STATE.footCopyright  = document.getElementById('m-foot-copy').value.trim();
   MENU_STATE.footTagline    = document.getElementById('m-foot-tag').value.trim();
   MENU_STATE.footCoords     = document.getElementById('m-foot-coords').value.trim();
-  window.DopplerData.setMenu(MENU_STATE);
-  toast('Menu saved.');
+  try {
+    await window.DopplerAPI.putMenu(MENU_STATE);
+    toast('Menu published.');
+  } catch (e) {
+    toast('Publish failed: ' + e.message);
+  }
 });
 
 document.getElementById('menu-reset').addEventListener('click', () => {
-  if (!confirm('Reset the entire menu to defaults? Your custom edits will be lost.')) return;
-  window.DopplerData.resetMenu();
-  loadMenuState(); renderMenu(); toast('Menu reset.');
+  if (!confirm('Reset the editor to the built-in default menu? Click “Save changes” to publish it.')) return;
+  MENU_STATE = JSON.parse(JSON.stringify(window.DopplerData.MENU_DEFAULTS));
+  renderMenu(); toast('Loaded defaults — Save to publish.');
 });
 
 function renderAll() {
-  renderMenu();
+  loadMenuState().then(renderMenu);
   renderEvents();
   renderJobs();
   renderCareers();
