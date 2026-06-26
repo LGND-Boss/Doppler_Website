@@ -132,6 +132,7 @@ function App() {
       <Topbar dark={true} />
       <Hero />
       <About />
+      <Specials />
       <PourOver />
       <SpaceTour />
       <Reservations />

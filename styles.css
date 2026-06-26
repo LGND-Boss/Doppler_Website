@@ -840,6 +840,53 @@ body.no-custom-cursor select { cursor: pointer; }
 .specs .spec .n { font-size: 56px; letter-spacing: -0.03em; line-height: 1; }
 .specs .spec .l { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.6; margin-top: 8px; }
 
+/* Specials — rotating cards */
+.specials-head {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 64px;
+  align-items: end;
+  margin-top: 24px;
+}
+.specials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 56px;
+}
+.special-card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px;
+  border: 1px solid var(--rule);
+  background: rgba(26, 20, 16, 0.02);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.special-card:hover { border-color: var(--brick); transform: translateY(-4px); }
+.special-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brick);
+  margin-bottom: 18px;
+}
+.special-name { font-size: 30px; line-height: 1.05; }
+.special-desc {
+  font-size: 15px;
+  line-height: 1.55;
+  opacity: 0.72;
+  margin-top: 12px;
+  flex: 1;
+}
+.special-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
 /* Pour-over */
 .pour-wrap {
   display: grid;
@@ -1179,6 +1226,8 @@ body.theme-mono { --ember: #e0d8c4; --brick: #6a5848; --brick-deep: #3a302a; }
 /* ============== MOBILE / TABLET ============== */
 @media (max-width: 900px) {
   .hero-grid, .about-grid, .pour-wrap, .reserve-grid { grid-template-columns: 1fr; gap: 32px; }
+  .specials-head { grid-template-columns: 1fr; gap: 24px; align-items: start; }
+  .specials-grid { grid-template-columns: 1fr; }
   .specs { grid-template-columns: 1fr; }
   .specs .spec { border-right: none; border-bottom: 1px solid var(--rule); padding: 16px 0; }
   .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
