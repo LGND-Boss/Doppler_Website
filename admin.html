@@ -602,9 +602,9 @@
     <div class="tabs">
       <button class="tab active" data-tab="events">§ Events</button>
       <button class="tab" data-tab="content">§ Site Content</button>
+      <button class="tab" data-tab="menu">§ Menu</button>
       <button class="tab" data-tab="photos">§ Photos</button>
-      <button class="tab" data-tab="jobs">§ Jobs</button>
-      <button class="tab" data-tab="careers">§ Careers Copy</button>
+      <button class="tab" data-tab="careers">§ Careers</button>
       <button class="tab" data-tab="settings">§ Settings</button>
       <button class="tab" data-tab="orders">§ Orders</button>
       <button class="tab" data-tab="seats">§ Seats &amp; QR</button>
@@ -639,6 +639,115 @@
       <p id="content-msg" class="help"></p>
     </div>
 
+    <!-- MENU PANEL -->
+    <div class="panel" data-panel="menu">
+      <div class="panel-head">
+        <h2>Menu</h2>
+        <div class="actions">
+          <a href="menu.html" class="btn-a" target="_blank" rel="noopener" style="display: inline-block; text-decoration: none;">Preview ↗</a>
+          <button class="btn-a" id="menu-reset">Reset to defaults</button>
+          <button class="btn-a primary" id="menu-save">Save changes</button>
+        </div>
+      </div>
+
+      <!-- Masthead -->
+      <div class="m-section">
+        <div class="m-section-head">§ 01 · Masthead</div>
+        <div class="field">
+          <label>Edition / sub-title</label>
+          <input type="text" id="m-edition" placeholder="Edition 02 · Summer 2026"/>
+        </div>
+        <div class="field-row-3">
+          <div class="field">
+            <label>Title line 1</label>
+            <input type="text" id="m-title-top"/>
+          </div>
+          <div class="field">
+            <label>Title line 2</label>
+            <input type="text" id="m-title-mid"/>
+          </div>
+          <div class="field">
+            <label>Title line 3 (italic)</label>
+            <input type="text" id="m-title-serif"/>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Address (line break = new line)</label>
+            <textarea id="m-address" style="min-height: 64px;"></textarea>
+          </div>
+          <div class="field">
+            <label>Hours</label>
+            <input type="text" id="m-hours" placeholder="06:00 — 22:30"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="m-section">
+        <div class="m-section-head">
+          <span>§ 02 · Categories &amp; items</span>
+          <button class="btn-a" id="m-cat-add">+ Add category</button>
+        </div>
+        <div id="m-cats" class="m-cats"></div>
+      </div>
+
+      <!-- Add-ons -->
+      <div class="m-section">
+        <div class="m-section-head">
+          <span>§ 03 · Add-ons (milk options)</span>
+          <button class="btn-a" id="m-addon-add">+ Add</button>
+        </div>
+        <div id="m-addons"></div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">§ 04 · Kitchen blurb</div>
+        <div class="field">
+          <label>Heading</label>
+          <input type="text" id="m-kitchen-title"/>
+        </div>
+        <div class="field">
+          <label>Body</label>
+          <textarea id="m-kitchen-body"></textarea>
+        </div>
+        <div class="field">
+          <label>Price range line</label>
+          <input type="text" id="m-kitchen-range" placeholder="From ₹320 · up to ₹860"/>
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">§ 05 · Fine print</div>
+        <div class="field">
+          <label>Heading</label>
+          <input type="text" id="m-fine-title"/>
+        </div>
+        <div class="field">
+          <label>Body</label>
+          <textarea id="m-fine-body"></textarea>
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">§ 06 · Footer</div>
+        <div class="field-row-3">
+          <div class="field">
+            <label>Copyright line</label>
+            <input type="text" id="m-foot-copy"/>
+          </div>
+          <div class="field">
+            <label>Tagline (italic)</label>
+            <input type="text" id="m-foot-tag"/>
+          </div>
+          <div class="field">
+            <label>Coordinates</label>
+            <input type="text" id="m-foot-coords"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- PHOTOS PANEL -->
     <div class="panel" data-panel="photos">
       <div class="panel-head">
@@ -654,39 +763,40 @@
       <div id="img-grid" class="img-grid"></div>
     </div>
 
-    <!-- JOBS PANEL -->
-    <div class="panel" data-panel="jobs">
+    <!-- CAREERS PANEL (job openings + page copy) -->
+    <div class="panel" data-panel="careers">
       <div class="panel-head">
-        <h2>Job openings</h2>
-        <div class="actions">
+        <h2>Careers</h2>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">§ Job openings</div>
+        <div class="actions" style="margin: 8px 0 12px;">
           <button class="btn-a" id="job-reset">Reset to defaults</button>
           <button class="btn-a primary" id="job-new">+ New role</button>
         </div>
+        <div id="job-list" class="list"></div>
       </div>
-      <div id="job-list" class="list"></div>
-    </div>
 
-    <!-- CAREERS COPY PANEL -->
-    <div class="panel" data-panel="careers">
-      <div class="panel-head">
-        <h2>Careers page copy</h2>
-        <div class="actions">
+      <div class="m-section" style="margin-top: 28px;">
+        <div class="m-section-head">§ Careers page copy</div>
+        <div class="actions" style="margin: 8px 0 12px;">
           <button class="btn-a" id="careers-reset">Reset to defaults</button>
           <button class="btn-a primary" id="careers-save">Save changes</button>
         </div>
-      </div>
-      <div class="field">
-        <label>Intro paragraph</label>
-        <textarea id="careers-intro"></textarea>
-      </div>
-      <div class="field">
-        <label>Contact email</label>
-        <input type="email" id="careers-contact"/>
-      </div>
-      <div class="field">
-        <label>Perks list</label>
-        <div id="perks-rows"></div>
-        <button class="btn-a" id="perk-add" style="align-self: flex-start; margin-top: 6px;">+ Add perk</button>
+        <div class="field">
+          <label>Intro paragraph</label>
+          <textarea id="careers-intro"></textarea>
+        </div>
+        <div class="field">
+          <label>Contact email</label>
+          <input type="email" id="careers-contact"/>
+        </div>
+        <div class="field">
+          <label>Perks list</label>
+          <div id="perks-rows"></div>
+          <button class="btn-a" id="perk-add" style="align-self: flex-start; margin-top: 6px;">+ Add perk</button>
+        </div>
       </div>
     </div>
 
@@ -792,18 +902,22 @@
         <h2>Staff &amp; logins</h2>
       </div>
       <p class="help" style="margin-bottom: 12px;">
-        Create accounts for your team and assign a role. <strong>Bar</strong> &amp; <strong>Kitchen</strong> log into the
-        <a href="orders.html" target="_blank" rel="noopener">Live Orders page</a> and see only their station; <strong>Cashier</strong> takes payment and redeems points; <strong>Admin</strong> can open this console.
+        Create accounts for your team and assign a role.
+        <strong>Admin</strong> opens the full console; <strong>Editor</strong> opens the
+        console but sees only Events, Site Content, Photos and Careers.
+        <strong>Bar</strong> &amp; <strong>Kitchen</strong> log into the
+        <a href="orders.html" target="_blank" rel="noopener">Live Orders page</a> and see only their station; <strong>Cashier</strong> takes payment and redeems points.
       </p>
       <form id="staff-form" class="field-row" style="align-items: flex-end; gap: 12px; flex-wrap: wrap;">
         <div class="field"><label>Email</label><input type="email" id="staff-email" placeholder="name@doppler.coffee" required/></div>
         <div class="field"><label>Password</label><input type="text" id="staff-pass" placeholder="min 6 characters" required/></div>
         <div class="field"><label>Role</label>
           <select id="staff-role">
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+            <option value="cashier">Cashier</option>
             <option value="bar">Bar</option>
             <option value="kitchen">Kitchen</option>
-            <option value="cashier">Cashier</option>
-            <option value="admin">Admin</option>
           </select>
         </div>
         <button type="submit" class="btn-a primary" style="margin-bottom: 2px;">+ Add staff</button>
@@ -935,27 +1049,47 @@ const KIND_COLORS = {
 const gate = document.getElementById('gate');
 const app  = document.getElementById('app');
 
-function openApp() {
+// Tabs an Editor may use. Admin sees everything (incl. Settings, POS, Staff).
+const EDITOR_TABS = ['events', 'content', 'menu', 'photos', 'careers'];
+let currentRole = 'admin';
+let MENU_STATE = null;
+
+function applyRoleVisibility(role) {
+  const isAdmin = role === 'admin';
+  document.querySelectorAll('.tab').forEach((t) => {
+    t.style.display = (isAdmin || EDITOR_TABS.includes(t.dataset.tab)) ? '' : 'none';
+  });
+  const active = document.querySelector('.tab.active');
+  if (!active || active.style.display === 'none') {
+    const first = document.querySelector('.tab:not([style*="display: none"])');
+    if (first) first.click();
+  }
+}
+
+function openApp(role) {
+  currentRole = role || 'admin';
   gate.style.display = 'none';
   app.style.display = 'block';
   renderAll();
-  if (typeof bootStaff === 'function') bootStaff();
+  applyRoleVisibility(currentRole);
+  if (typeof bootStaff === 'function') bootStaff(currentRole);
 }
 function closeApp() {
   app.style.display = 'none';
   gate.style.display = 'block';
 }
 
-// The admin console is admin-only. Non-admin staff are pointed at the live-orders page.
+// Admins + Editors open the console (Editors get a reduced tab set). The POS
+// station roles (cashier/bar/kitchen) are pointed at the live-orders page.
 function enter(me) {
-  if (me && me.role === 'admin') {
+  if (me && (me.role === 'admin' || me.role === 'editor')) {
     document.getElementById('gate-redirect').style.display = 'none';
-    openApp();
-  } else {
+    openApp(me.role);
+  } else if (me) {
     const r = document.getElementById('gate-redirect');
     r.style.display = 'block';
-    r.innerHTML = 'This is a <strong>' + (me ? me.role : 'station') +
-      '</strong> account — the admin console is for admins only.<br/>' +
+    r.innerHTML = 'This is a <strong>' + me.role +
+      '</strong> account — the console is for admins and editors.<br/>' +
       '<a href="orders.html" style="color: var(--ember);">→ Open the Live Orders page</a>';
   }
 }
@@ -1469,6 +1603,217 @@ document.getElementById('img-reset-all').addEventListener('click', async () => {
   renderPhotos(); renderQuota(); toast('All photos reset.');
 });
 
+// ====== MENU ======
+function loadMenuState() {
+  MENU_STATE = JSON.parse(JSON.stringify(window.DopplerData.getMenu()));
+}
+function renderMenu() {
+  if (!MENU_STATE) loadMenuState();
+  const m = MENU_STATE;
+  document.getElementById('m-edition').value     = m.edition || '';
+  document.getElementById('m-title-top').value   = m.titleTop || '';
+  document.getElementById('m-title-mid').value   = m.titleMid || '';
+  document.getElementById('m-title-serif').value = m.titleSerif || '';
+  document.getElementById('m-address').value     = m.address || '';
+  document.getElementById('m-hours').value       = m.hours || '';
+  document.getElementById('m-kitchen-title').value = m.kitchenTitle || '';
+  document.getElementById('m-kitchen-body').value  = m.kitchenBody || '';
+  document.getElementById('m-kitchen-range').value = m.kitchenRange || '';
+  document.getElementById('m-fine-title').value    = m.finePrintTitle || '';
+  document.getElementById('m-fine-body').value     = m.finePrintBody || '';
+  document.getElementById('m-foot-copy').value     = m.footCopyright || '';
+  document.getElementById('m-foot-tag').value      = m.footTagline || '';
+  document.getElementById('m-foot-coords').value   = m.footCoords || '';
+  renderMenuCats();
+  renderMenuAddons();
+}
+
+function renderMenuCats() {
+  const host = document.getElementById('m-cats');
+  host.innerHTML = '';
+  const cats = MENU_STATE.categories || [];
+  if (!cats.length) {
+    host.innerHTML = '<div class="m-empty">No categories. Add one to get started.</div>';
+    return;
+  }
+  cats.forEach((cat, ci) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'm-cat';
+
+    const items = (cat.items || []).map((it, ii) => `
+      <div class="m-item" data-i="${ii}">
+        <input type="text" data-k="name"  value="${escapeHtml(it.name || '')}" placeholder="Item name"/>
+        <input type="text" data-k="note"  value="${escapeHtml(it.note || '')}" placeholder="note · descriptor"/>
+        <input type="text" class="mono" data-k="price" value="${escapeHtml(it.price || '')}" placeholder="₹240"/>
+        <div class="row-actions">
+          <button data-act="i-up"   title="Move up"   ${ii === 0 ? 'disabled' : ''}>↑</button>
+          <button data-act="i-down" title="Move down" ${ii === cat.items.length - 1 ? 'disabled' : ''}>↓</button>
+          <button class="danger" data-act="i-del" title="Delete">×</button>
+        </div>
+      </div>`).join('');
+
+    wrap.innerHTML = `
+      <div class="m-cat-top">
+        <div class="field"><label>Title</label>
+          <input type="text" data-k="title" value="${escapeHtml(cat.title || '')}"/>
+        </div>
+        <div class="field"><label>Code</label>
+          <input type="text" data-k="code" value="${escapeHtml(cat.code || '')}" placeholder="§ 01 · ..."/>
+        </div>
+        <div class="field"><label>Column</label>
+          <select data-k="column">
+            <option value="left"  ${cat.column !== 'right' ? 'selected' : ''}>Left</option>
+            <option value="right" ${cat.column === 'right' ? 'selected' : ''}>Right</option>
+          </select>
+        </div>
+        <div class="row-actions">
+          <button class="btn-a" data-act="c-up"   title="Move category up"   ${ci === 0 ? 'disabled' : ''}>↑</button>
+          <button class="btn-a" data-act="c-down" title="Move category down" ${ci === cats.length - 1 ? 'disabled' : ''}>↓</button>
+          <button class="btn-a danger" data-act="c-del">Delete</button>
+        </div>
+      </div>
+      <div class="m-cat-sub-row">
+        <div class="field"><label>Subtitle (optional one-liner)</label>
+          <input type="text" data-k="sub" value="${escapeHtml(cat.sub || '')}" placeholder="Pour-over via Hario Switch · ..."/>
+        </div>
+      </div>
+      <div class="m-items">
+        ${items || '<div class="m-empty" style="padding: 12px;">No items yet.</div>'}
+      </div>
+      <div class="m-add-item-row">
+        <button class="btn-a" data-act="i-add">+ Add item</button>
+      </div>`;
+
+    // category-level field bindings
+    wrap.querySelectorAll(':scope > .m-cat-top input, :scope > .m-cat-top select, :scope > .m-cat-sub-row input')
+      .forEach(inp => {
+        inp.addEventListener('input', () => {
+          cat[inp.dataset.k] = inp.value;
+        });
+      });
+
+    // category-level buttons
+    wrap.querySelectorAll(':scope > .m-cat-top [data-act]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const act = btn.dataset.act;
+        if (act === 'c-del') {
+          if (!confirm('Delete this category and all its items?')) return;
+          MENU_STATE.categories.splice(ci, 1);
+          renderMenuCats();
+        } else if (act === 'c-up' && ci > 0) {
+          const arr = MENU_STATE.categories;
+          [arr[ci-1], arr[ci]] = [arr[ci], arr[ci-1]];
+          renderMenuCats();
+        } else if (act === 'c-down' && ci < cats.length - 1) {
+          const arr = MENU_STATE.categories;
+          [arr[ci+1], arr[ci]] = [arr[ci], arr[ci+1]];
+          renderMenuCats();
+        }
+      });
+    });
+
+    // item-level bindings
+    wrap.querySelectorAll('.m-item').forEach((row) => {
+      const ii = parseInt(row.dataset.i, 10);
+      row.querySelectorAll('input[data-k]').forEach(inp => {
+        inp.addEventListener('input', () => {
+          cat.items[ii][inp.dataset.k] = inp.value;
+        });
+      });
+      row.querySelectorAll('[data-act]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const act = btn.dataset.act;
+          if (act === 'i-del') {
+            cat.items.splice(ii, 1);
+            renderMenuCats();
+          } else if (act === 'i-up' && ii > 0) {
+            [cat.items[ii-1], cat.items[ii]] = [cat.items[ii], cat.items[ii-1]];
+            renderMenuCats();
+          } else if (act === 'i-down' && ii < cat.items.length - 1) {
+            [cat.items[ii+1], cat.items[ii]] = [cat.items[ii], cat.items[ii+1]];
+            renderMenuCats();
+          }
+        });
+      });
+    });
+
+    // add-item
+    wrap.querySelector('[data-act="i-add"]').addEventListener('click', () => {
+      cat.items = cat.items || [];
+      cat.items.push({ name: '', note: '', price: '' });
+      renderMenuCats();
+    });
+
+    host.appendChild(wrap);
+  });
+}
+
+function renderMenuAddons() {
+  const host = document.getElementById('m-addons');
+  host.innerHTML = '';
+  const addons = MENU_STATE.addons || [];
+  addons.forEach((a, i) => {
+    const row = document.createElement('div');
+    row.className = 'm-addon';
+    row.innerHTML = `
+      <input type="text" data-k="name"  value="${escapeHtml(a.name || '')}"  placeholder="Oat milk"/>
+      <input type="text" class="mono" data-k="price" value="${escapeHtml(a.price || '')}" placeholder="₹60"/>
+      <button class="btn-a danger" type="button">×</button>`;
+    row.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', () => { addons[i][inp.dataset.k] = inp.value; });
+    });
+    row.querySelector('button').addEventListener('click', () => {
+      addons.splice(i, 1); renderMenuAddons();
+    });
+    host.appendChild(row);
+  });
+}
+
+document.getElementById('m-cat-add').addEventListener('click', () => {
+  MENU_STATE.categories = MENU_STATE.categories || [];
+  MENU_STATE.categories.push({
+    id: 'cat-' + Math.random().toString(36).slice(2, 7),
+    column: 'left',
+    title: 'New category',
+    code: '§ ' + String(MENU_STATE.categories.length + 1).padStart(2, '0'),
+    sub: '',
+    items: [],
+  });
+  renderMenuCats();
+});
+
+document.getElementById('m-addon-add').addEventListener('click', () => {
+  MENU_STATE.addons = MENU_STATE.addons || [];
+  MENU_STATE.addons.push({ name: '', price: '' });
+  renderMenuAddons();
+});
+
+document.getElementById('menu-save').addEventListener('click', () => {
+  // pull top-level fields off the form into MENU_STATE
+  MENU_STATE.edition        = document.getElementById('m-edition').value.trim();
+  MENU_STATE.titleTop       = document.getElementById('m-title-top').value;
+  MENU_STATE.titleMid       = document.getElementById('m-title-mid').value;
+  MENU_STATE.titleSerif     = document.getElementById('m-title-serif').value;
+  MENU_STATE.address        = document.getElementById('m-address').value;
+  MENU_STATE.hours          = document.getElementById('m-hours').value.trim();
+  MENU_STATE.kitchenTitle   = document.getElementById('m-kitchen-title').value.trim();
+  MENU_STATE.kitchenBody    = document.getElementById('m-kitchen-body').value.trim();
+  MENU_STATE.kitchenRange   = document.getElementById('m-kitchen-range').value.trim();
+  MENU_STATE.finePrintTitle = document.getElementById('m-fine-title').value.trim();
+  MENU_STATE.finePrintBody  = document.getElementById('m-fine-body').value.trim();
+  MENU_STATE.footCopyright  = document.getElementById('m-foot-copy').value.trim();
+  MENU_STATE.footTagline    = document.getElementById('m-foot-tag').value.trim();
+  MENU_STATE.footCoords     = document.getElementById('m-foot-coords').value.trim();
+  window.DopplerData.setMenu(MENU_STATE);
+  toast('Menu saved.');
+});
+
+document.getElementById('menu-reset').addEventListener('click', () => {
+  if (!confirm('Reset the entire menu to defaults? Your custom edits will be lost.')) return;
+  window.DopplerData.resetMenu();
+  loadMenuState(); renderMenu(); toast('Menu reset.');
+});
+
 function renderAll() {
   renderEvents();
   renderJobs();
@@ -1476,6 +1821,7 @@ function renderAll() {
   renderPhotos();
   renderQuota();
   renderSettings();
+  renderMenu();
 }
 </script>
 
@@ -1485,9 +1831,10 @@ function renderAll() {
   const API = window.DopplerAPI;
   let booted = false;
 
-  function bootStaff() {
+  function bootStaff(role) {
     if (booted) return; booted = true;
-    initOrders(); initSeats(); initCustomers(); initSettings(); initUsers(); initContent();
+    initContent(); // content tabs are available to editors + admins
+    if (role === 'admin') { initOrders(); initSeats(); initCustomers(); initSettings(); initUsers(); }
   }
   window.bootStaff = bootStaff;
 
@@ -1665,7 +2012,7 @@ function renderAll() {
       row.innerHTML =
         '<div style="flex:1;"><strong>' + escapeHtml(u.email) + '</strong></div>' +
         '<select data-role="' + u.id + '">' +
-          ['bar', 'kitchen', 'cashier', 'admin'].map(r => '<option value="' + r + '"' + (u.role === r ? ' selected' : '') + '>' + r + '</option>').join('') +
+          ['editor', 'admin', 'cashier', 'bar', 'kitchen'].map(r => '<option value="' + r + '"' + (u.role === r ? ' selected' : '') + '>' + r + '</option>').join('') +
         '</select>' +
         '<button class="btn-a" data-reset="' + u.id + '">Reset password</button>' +
         '<button class="btn-a danger" data-del="' + u.id + '">Delete</button>';

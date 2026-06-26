@@ -15,8 +15,8 @@ router.get('/', async (req, res) => {
   res.json((rows[0] && rows[0].data) || {});
 });
 
-// Admin: replace the published content document.
-router.put('/', requireRole('admin'), async (req, res) => {
+// Admin/Editor: replace the published content document.
+router.put('/', requireRole('admin', 'editor'), async (req, res) => {
   const data = req.body && typeof req.body === 'object' ? req.body : {};
   // Guard against junk: only keep string values, cap length.
   const clean = {};
@@ -30,8 +30,8 @@ router.put('/', requireRole('admin'), async (req, res) => {
   res.json(rows[0].data);
 });
 
-// Admin: upload an image (base64 data URL). Saves a file, returns its URL.
-router.post('/image', requireRole('admin'), async (req, res) => {
+// Admin/Editor: upload an image (base64 data URL). Saves a file, returns its URL.
+router.post('/image', requireRole('admin', 'editor'), async (req, res) => {
   const { key, dataUrl } = req.body || {};
   if (!key || !/^[a-z0-9_-]+$/i.test(key)) return res.status(400).json({ error: 'invalid key' });
   const m = /^data:(image\/[a-z+]+);base64,(.+)$/i.exec(dataUrl || '');
