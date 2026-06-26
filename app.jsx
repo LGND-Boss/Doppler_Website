@@ -43,6 +43,7 @@ function Topbar({ dark }) {
       </div>
       <div className="topbar-nav">
         <a href="#about" className="nav-link">About</a>
+        <a href="#specials" className="nav-link">Specials</a>
         <a href="#brew" className="nav-link">Brew</a>
         <a href="#tour" className="nav-link">Space</a>
         <a href="menu.html" className="nav-link">Menu</a>
