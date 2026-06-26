@@ -29,6 +29,18 @@
     about_spec2_n: '14', about_spec2_l: 'Single-origins on bar',
     about_spec3_n: '2.4k', about_spec3_l: 'Cups poured / week',
 
+    // Specials (rotating — leave a card's name blank to hide it)
+    specials_label: '§ specials · this week on the bar',
+    specials_h1: "This week's",
+    specials_h2: 'pours.',
+    specials_intro: 'A short rotation — seasonal lots, limited batches, and the odd experiment from the bar. Here while they last.',
+    specials_1_tag: 'Limited · 30 cups/day', specials_1_name: 'Geisha, washed',
+    specials_1_desc: 'Panama · bergamot, jasmine, white peach. Poured on the V60, no milk.', specials_1_price: '₹640',
+    specials_2_tag: 'Seasonal', specials_2_name: 'Strawberry Cortado',
+    specials_2_desc: 'Double ristretto, fresh strawberry reduction, steamed milk. Spring only.', specials_2_price: '₹320',
+    specials_3_tag: 'Bar experiment', specials_3_name: 'Cascara Tonic',
+    specials_3_desc: 'Coffee-cherry syrup, indian tonic, orange peel. Caffeine-light, bright.', specials_3_price: '₹280',
+
     // Brew
     brew_label: '§ 03 / brew · simulator',
     brew_h1: 'Pour your',
@@ -131,6 +143,18 @@
       { key: 'about_spec1_n', label: 'Spec 1 · number' }, { key: 'about_spec1_l', label: 'Spec 1 · label' },
       { key: 'about_spec2_n', label: 'Spec 2 · number' }, { key: 'about_spec2_l', label: 'Spec 2 · label' },
       { key: 'about_spec3_n', label: 'Spec 3 · number' }, { key: 'about_spec3_l', label: 'Spec 3 · label' },
+    ]},
+    { group: 'Specials', fields: [
+      { key: 'specials_label', label: 'Eyebrow label' },
+      { key: 'specials_h1', label: 'Heading · line 1' },
+      { key: 'specials_h2', label: 'Heading · line 2 (serif)' },
+      { key: 'specials_intro', label: 'Intro paragraph', type: 'area' },
+      { key: 'specials_1_tag', label: 'Card 1 · tag' }, { key: 'specials_1_name', label: 'Card 1 · name (blank = hide)' },
+      { key: 'specials_1_desc', label: 'Card 1 · description', type: 'area' }, { key: 'specials_1_price', label: 'Card 1 · price' },
+      { key: 'specials_2_tag', label: 'Card 2 · tag' }, { key: 'specials_2_name', label: 'Card 2 · name (blank = hide)' },
+      { key: 'specials_2_desc', label: 'Card 2 · description', type: 'area' }, { key: 'specials_2_price', label: 'Card 2 · price' },
+      { key: 'specials_3_tag', label: 'Card 3 · tag' }, { key: 'specials_3_name', label: 'Card 3 · name (blank = hide)' },
+      { key: 'specials_3_desc', label: 'Card 3 · description', type: 'area' }, { key: 'specials_3_price', label: 'Card 3 · price' },
     ]},
     { group: 'Brew', fields: [
       { key: 'brew_label', label: 'Eyebrow label' },
